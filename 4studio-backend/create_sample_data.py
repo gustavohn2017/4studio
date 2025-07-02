@@ -1,5 +1,5 @@
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'voicetel.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '4studio.settings')
 
 import django
 django.setup()
@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 # Criar usuário admin se não existir
 if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@voicetel.com.br', 'admin123')
+    User.objects.create_superuser('admin', 'admin@4studio.com.br', 'admin123')
     print("Superusuário 'admin' criado com senha 'admin123'")
 else:
     print("Superusuário 'admin' já existe")
@@ -67,12 +67,12 @@ testimonials = [
     {
         'client_name': 'João Silva',
         'company': 'TechSolutions',
-        'quote': 'As locuções da VoiceTel transformaram completamente o atendimento telefônico da nossa empresa. A qualidade é incomparável.'
+        'quote': 'As locuções da 4studio transformaram completamente o atendimento telefônico da nossa empresa. A qualidade é incomparável.'
     },
     {
         'client_name': 'Maria Oliveira',
         'company': 'Banco Nacional',
-        'quote': 'Implementamos a URA da VoiceTel e nossos clientes elogiaram a clareza e profissionalismo das mensagens.'
+        'quote': 'Implementamos a URA da 4studio e nossos clientes elogiaram a clareza e profissionalismo das mensagens.'
     },
     {
         'client_name': 'Carlos Mendes',

@@ -1,8 +1,8 @@
-# VoiceTel Admin Panel - Arquitetura CSS Reorganizada
+# 4studio Admin Panel - Arquitetura CSS Reorganizada
 
 ## Visão Geral
 
-A estrutura CSS do painel administrativo VoiceTel foi completamente reorganizada seguindo as melhores práticas de desenvolvimento, separando estilos em arquivos modulares para melhor manutenibilidade e organização.
+A estrutura CSS do painel administrativo 4studio foi completamente reorganizada seguindo as melhores práticas de desenvolvimento, separando estilos em arquivos modulares para melhor manutenibilidade e organização.
 
 ## Estrutura de Arquivos
 
@@ -98,10 +98,10 @@ O template base foi limpo e agora carrega os estilos de forma organizada:
 <!-- Tailwind Configuration -->
 <script src="{% static 'js/tailwind-config.js' %}"></script>
 
-<!-- VoiceTel Stylesheets -->
+<!-- 4studio Stylesheets -->
 <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
-<!-- VoiceTel JavaScript -->
+<!-- 4studio JavaScript -->
 <script src="{% static 'js/admin-panel.js' %}"></script>
 ```
 

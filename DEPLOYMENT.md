@@ -1,6 +1,6 @@
-# Guia de Implantação do VoiceTel
+# Guia de Implantação do 4studio
 
-Este documento fornece instruções detalhadas para implantação do sistema VoiceTel em ambientes de desenvolvimento e produção.
+Este documento fornece instruções detalhadas para implantação do sistema 4studio em ambientes de desenvolvimento e produção.
 
 ## Implantação em Ambiente de Desenvolvimento
 
@@ -14,8 +14,8 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
 
 1. **Clone o repositório**
    ```
-   git clone https://github.com/gustavohn2017/voicetel.git
-   cd voicetel
+   git clone https://github.com/gustavohn2017/4studio.git
+   cd 4studio
    ```
 
 2. **Configuração Automática**
@@ -30,7 +30,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    #### Backend (Django):
    
    ```
-   cd voicetel-backend
+   cd 4studio-backend
    python -m venv venv
    .\venv\Scripts\Activate.ps1
    pip install -r requirements.txt
@@ -42,7 +42,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    #### Frontend (Next.js):
    
    ```
-   cd voicetel-frontend
+   cd 4studio-frontend
    npm install
    npm run dev
    ```
@@ -64,9 +64,9 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    - Crie um banco de dados PostgreSQL:
      ```
      sudo -u postgres psql
-     CREATE DATABASE voicetel_db;
-     CREATE USER voicetel_user WITH PASSWORD 'senha_segura';
-     GRANT ALL PRIVILEGES ON DATABASE voicetel_db TO voicetel_user;
+     CREATE DATABASE 4studio_db;
+     CREATE USER 4studio_user WITH PASSWORD 'senha_segura';
+     GRANT ALL PRIVILEGES ON DATABASE 4studio_db TO 4studio_user;
      \q
      ```
 
@@ -74,8 +74,8 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    
    - Clone o repositório:
      ```
-     git clone https://github.com/gustavohn2017/voicetel.git
-     cd voicetel/voicetel-backend
+     git clone https://github.com/gustavohn2017/4studio.git
+     cd 4studio/4studio-backend
      ```
    
    - Configure o ambiente virtual:
@@ -93,8 +93,8 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
      SECRET_KEY=sua_chave_secreta_gerada
      DEBUG=False
      ALLOWED_HOSTS=seu_dominio.com,www.seu_dominio.com
-     DB_NAME=voicetel_db
-     DB_USER=voicetel_user
+     DB_NAME=4studio_db
+     DB_USER=4studio_user
      DB_PASSWORD=senha_segura
      DB_HOST=localhost
      EMAIL_HOST=smtp.seu_provedor.com
@@ -109,24 +109,24 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    
    - Crie um arquivo systemd para o serviço:
      ```
-     sudo nano /etc/systemd/system/voicetel.service
+     sudo nano /etc/systemd/system/4studio.service
      ```
    
    - Adicione o seguinte conteúdo:
      ```
      [Unit]
-     Description=Gunicorn daemon for VoiceTel
+     Description=Gunicorn daemon for 4studio
      After=network.target
 
      [Service]
      User=www-data
      Group=www-data
-     WorkingDirectory=/caminho/para/voicetel/voicetel-backend
-     ExecStart=/caminho/para/voicetel/voicetel-backend/venv/bin/gunicorn \
+     WorkingDirectory=/caminho/para/4studio/4studio-backend
+     ExecStart=/caminho/para/4studio/4studio-backend/venv/bin/gunicorn \
                --access-logfile - \
                --workers 3 \
-               --bind unix:/caminho/para/voicetel/voicetel-backend/voicetel.sock \
-               voicetel.wsgi:application
+               --bind unix:/caminho/para/4studio/4studio-backend/4studio.sock \
+               4studio.wsgi:application
 
      [Install]
      WantedBy=multi-user.target
@@ -136,7 +136,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    
    - Crie um arquivo de configuração:
      ```
-     sudo nano /etc/nginx/sites-available/voicetel
+     sudo nano /etc/nginx/sites-available/4studio
      ```
    
    - Adicione o seguinte conteúdo:
@@ -148,23 +148,23 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
          location = /favicon.ico { access_log off; log_not_found off; }
          
          location /static/ {
-             root /caminho/para/voicetel/voicetel-backend;
+             root /caminho/para/4studio/4studio-backend;
          }
 
          location /media/ {
-             root /caminho/para/voicetel/voicetel-backend;
+             root /caminho/para/4studio/4studio-backend;
          }
 
          location / {
              include proxy_params;
-             proxy_pass http://unix:/caminho/para/voicetel/voicetel-backend/voicetel.sock;
+             proxy_pass http://unix:/caminho/para/4studio/4studio-backend/4studio.sock;
          }
      }
      ```
 
    - Habilite o site:
      ```
-     sudo ln -s /etc/nginx/sites-available/voicetel /etc/nginx/sites-enabled
+     sudo ln -s /etc/nginx/sites-available/4studio /etc/nginx/sites-enabled
      sudo nginx -t
      sudo systemctl restart nginx
      ```
@@ -177,8 +177,8 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
 
 8. **Inicie o serviço**
    ```
-   sudo systemctl start voicetel
-   sudo systemctl enable voicetel
+   sudo systemctl start 4studio
+   sudo systemctl enable 4studio
    ```
 
 ### Frontend (Next.js)
@@ -187,7 +187,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
 
 1. Crie uma conta na Vercel: https://vercel.com/signup
 2. Instale a CLI da Vercel: `npm i -g vercel`
-3. Navegue até a pasta do frontend: `cd voicetel-frontend`
+3. Navegue até a pasta do frontend: `cd 4studio-frontend`
 4. Execute o comando: `vercel`
 5. Siga as instruções para deployment
 
@@ -195,7 +195,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
 
 1. Navegue até a pasta do frontend:
    ```
-   cd voicetel-frontend
+   cd 4studio-frontend
    ```
 
 2. Instale as dependências:
@@ -216,7 +216,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
        listen 80;
        server_name frontend.seu_dominio.com;
 
-       root /caminho/para/voicetel/voicetel-frontend/.next;
+       root /caminho/para/4studio/4studio-frontend/.next;
        index index.html;
 
        location / {
@@ -242,7 +242,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
 
 4. Para testar o build localmente antes de fazer push:
    ```powershell
-   cd voicetel-frontend
+   cd 4studio-frontend
    npm run build
    # Verifique se a pasta 'out' foi criada com os arquivos estáticos
    ```
@@ -254,7 +254,7 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
 6. Depois de fazer push para a branch main, o workflow do GitHub Actions fará o deploy automaticamente.
    Você pode acompanhar o progresso na guia Actions do seu repositório.
 
-7. O site estará disponível em `https://seu-usuario.github.io/voicetel/`
+7. O site estará disponível em `https://seu-usuario.github.io/4studio/`
 
 8. **Nota:** Por ser um site estático no GitHub Pages, o frontend precisará comunicar-se com uma API externa.
    Certifique-se de que sua API backend está hospedada em algum lugar acessível publicamente e configure o CORS
@@ -272,20 +272,20 @@ O Render.com é uma plataforma de hospedagem que oferece um plano gratuito para 
 2. **Crie um novo Web Service**
    - Clique em "New" e escolha "Web Service"
    - Conecte-se ao seu repositório GitHub
-   - Selecione o repositório `voicetel`
+   - Selecione o repositório `4studio`
 
 3. **Configure o serviço**
-   - Nome: `voicetel-backend` ou similar
+   - Nome: `4studio-backend` ou similar
    - Ambiente: Python
-   - Build Command: `pip install -r requirements.txt && python voicetel-backend/manage.py collectstatic --noinput`
-   - Start Command: `cd voicetel-backend && gunicorn voicetel.wsgi --log-file -`
+   - Build Command: `pip install -r requirements.txt && python 4studio-backend/manage.py collectstatic --noinput`
+   - Start Command: `cd 4studio-backend && gunicorn 4studio.wsgi --log-file -`
    - Selecione o plano gratuito
 
 4. **Configure as variáveis de ambiente**
    - Adicione as seguintes variáveis de ambiente:
      - `PRODUCTION=true`
      - `SECRET_KEY=[sua-chave-secreta]`
-     - `ALLOWED_HOSTS=.onrender.com,voicetel-backend.onrender.com`
+     - `ALLOWED_HOSTS=.onrender.com,4studio-backend.onrender.com`
      - `CORS_ALLOWED_ORIGINS=https://gustavohn2017.github.io`
      - `DATABASE_URL=[seu-banco-de-dados]` (Pode usar o SQLite para testes iniciais ou configurar um PostgreSQL)
      - `DEBUG=False`
@@ -299,7 +299,7 @@ O Render.com é uma plataforma de hospedagem que oferece um plano gratuito para 
 
 1. **Adicione o Secret no GitHub**
    - No GitHub, vá para Settings > Secrets and Variables > Actions
-   - Adicione um novo repositório secret chamado `NEXT_PUBLIC_API_URL` com o valor `https://voicetel-backend.onrender.com/api`
+   - Adicione um novo repositório secret chamado `NEXT_PUBLIC_API_URL` com o valor `https://4studio-backend.onrender.com/api`
 
 2. **Force um novo deploy do frontend**
    - Faça uma pequena alteração no código ou dispare manualmente o workflow do GitHub Actions
@@ -342,20 +342,20 @@ O Render.com é uma plataforma de hospedagem que oferece um plano gratuito para 
 2. Atualize as dependências:
    ```
    # Backend
-   cd voicetel-backend
+   cd 4studio-backend
    source venv/bin/activate
    pip install -r requirements.txt
    python manage.py migrate
 
    # Frontend
-   cd ../voicetel-frontend
+   cd ../4studio-frontend
    npm install
    npm run build
    ```
 
 3. Reinicie os serviços:
    ```
-   sudo systemctl restart voicetel
+   sudo systemctl restart 4studio
    sudo systemctl restart nginx
    ```
 
@@ -363,19 +363,19 @@ O Render.com é uma plataforma de hospedagem que oferece um plano gratuito para 
 
 1. Backup do banco de dados:
    ```
-   pg_dump -U voicetel_user -h localhost -d voicetel_db > voicetel_backup_$(date +%Y%m%d).sql
+   pg_dump -U 4studio_user -h localhost -d 4studio_db > 4studio_backup_$(date +%Y%m%d).sql
    ```
 
 2. Backup de arquivos de mídia:
    ```
-   tar -zcvf media_backup_$(date +%Y%m%d).tar.gz /caminho/para/voicetel/voicetel-backend/media
+   tar -zcvf media_backup_$(date +%Y%m%d).tar.gz /caminho/para/4studio/4studio-backend/media
    ```
 
 ## Solução de Problemas
 
 ### Verificação de Logs
 
-- Django/Gunicorn: `sudo journalctl -u voicetel`
+- Django/Gunicorn: `sudo journalctl -u 4studio`
 - Nginx: `sudo tail -f /var/log/nginx/error.log`
 
 ### Problemas Comuns
@@ -386,8 +386,8 @@ O Render.com é uma plataforma de hospedagem que oferece um plano gratuito para 
 
 2. **Arquivos Estáticos Não Aparecem**
    - Execute `python manage.py collectstatic`
-   - Verifique permissões: `sudo chown -R www-data:www-data /caminho/para/voicetel/voicetel-backend/static`
+   - Verifique permissões: `sudo chown -R www-data:www-data /caminho/para/4studio/4studio-backend/static`
 
 3. **Erro 502 Bad Gateway**
-   - Verifique se Gunicorn está rodando: `sudo systemctl status voicetel`
-   - Verifique permissões do socket: `sudo chown www-data:www-data /caminho/para/voicetel/voicetel-backend/voicetel.sock`
+   - Verifique se Gunicorn está rodando: `sudo systemctl status 4studio`
+   - Verifique permissões do socket: `sudo chown www-data:www-data /caminho/para/4studio/4studio-backend/4studio.sock`

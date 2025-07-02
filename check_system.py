@@ -92,7 +92,7 @@ def check_database():
 
 def main():
     """Função principal para verificar o status do sistema"""
-    print_header("VERIFICAÇÃO DO SISTEMA VOICETEL")
+    print_header("VERIFICAÇÃO DO SISTEMA 4STUDIO")
     
     # Verifica se os servidores estão rodando
     backend_running = check_server_running(BACKEND_URL, "Backend Django")
@@ -103,7 +103,7 @@ def main():
         return
     
     if not frontend_running:
-        print("\n⚠️  O frontend não está rodando. Inicie com: npm run dev (no diretório voicetel-frontend)")
+        print("\n⚠️  O frontend não está rodando. Inicie com: npm run dev (no diretório 4studio-frontend)")
     
     # Testa API se o backend estiver rodando
     if backend_running:

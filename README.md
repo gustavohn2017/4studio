@@ -1,13 +1,13 @@
-# VoiceTel - Sistema de Gestão de Áudio
+# 4studio - Sistema de Gestão de Áudio
 
-VoiceTel é um sistema completo para gerenciamento e apresentação de serviços de locução, URA e espera telefônica. O projeto consiste em um frontend desenvolvido em Next.js + Tailwind CSS e um backend em Python Django + PostgreSQL.
+4studio é um sistema completo para gerenciamento e apresentação de serviços de locução, URA e espera telefônica. O projeto consiste em um frontend desenvolvido em Next.js + Tailwind CSS e um backend em Python Django + PostgreSQL.
 
 ## Estrutura do Projeto
 
 O projeto está dividido em duas aplicações principais:
 
-- **voicetel-frontend**: Interface do cliente desenvolvida em Next.js + Tailwind CSS
-- **voicetel-backend**: API e painel administrativo desenvolvidos em Django + PostgreSQL
+- **4studio-frontend**: Interface do cliente desenvolvida em Next.js + Tailwind CSS
+- **4studio-backend**: API e painel administrativo desenvolvidos em Django + PostgreSQL
 
 ## Requisitos do Sistema
 
@@ -41,7 +41,7 @@ Este script irá:
 
 1. Navegue até a pasta do backend:
 ```bash
-cd voicetel-backend
+cd 4studio-backend
 ```
 
 2. Crie e ative um ambiente virtual:
@@ -58,17 +58,17 @@ pip install -r requirements.txt
 
 4. Configure o banco de dados:
    - Por padrão, está configurado para usar SQLite para facilitar o desenvolvimento
-   - Para usar PostgreSQL, edite o arquivo `voicetel/settings.py` e descomente a configuração do PostgreSQL
+   - Para usar PostgreSQL, edite o arquivo `4studio/settings.py` e descomente a configuração do PostgreSQL
 
-5. Configure as variáveis de e-mail no arquivo `voicetel/settings.py`:
+5. Configure as variáveis de e-mail no arquivo `4studio/settings.py`:
 ```python
 EMAIL_HOST = 'seu.servidor.smtp.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'seu-email@dominio.com'
 EMAIL_HOST_PASSWORD = 'sua-senha-de-app'
-DEFAULT_FROM_EMAIL = 'VoiceTel <noreply@voicetel.com.br>'
-ADMIN_EMAIL = 'admin@voicetel.com.br'
+DEFAULT_FROM_EMAIL = '4studio <noreply@4studio.com.br>'
+ADMIN_EMAIL = 'admin@4studio.com.br'
 ```
 
 6. Execute as migrações:
@@ -92,7 +92,7 @@ O backend estará disponível em http://127.0.0.1:8000/ ou http://localhost:8000
 
 1. Navegue até a pasta do frontend:
 ```bash
-cd voicetel-frontend
+cd 4studio-frontend
 ```
 
 2. Instale as dependências:
@@ -141,5 +141,5 @@ Para deploy do frontend em produção, recomenda-se:
 ## Contato e Suporte
 
 Para questões relacionadas ao sistema, entre em contato com:
-- E-mail: suporte@voicetel.com.br
+- E-mail: suporte@4studio.com.br
 - Telefone: (XX) XXXX-XXXX

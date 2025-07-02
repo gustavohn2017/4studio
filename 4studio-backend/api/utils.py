@@ -58,7 +58,7 @@ def send_contact_email(contact_request):
         logger.info(f"Admin contact notification email sent for {contact_request.email}")
         
         # Send confirmation email to customer
-        customer_subject = 'Recebemos sua mensagem - VoiceTel'
+        customer_subject = 'Recebemos sua mensagem - 4studio'
         customer_context = {
             'name': contact_request.name,
             'has_attachment': bool(contact_request.script_file)

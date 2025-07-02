@@ -5,7 +5,7 @@ const repo = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.repla
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['localhost', 'voicetel-backend.local'], // Add your production domain here
+    domains: ['localhost', '4studio-backend.local'], // Add your production domain here
     unoptimized: true, // Required for static export
   },
   env: {

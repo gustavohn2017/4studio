@@ -1,4 +1,4 @@
-# Progresso do Projeto VoiceTel
+# Progresso do Projeto 4studio
 
 ## O que já foi concluído:
 
@@ -23,7 +23,7 @@
 ### Configuração do Ambiente
 - [x] Scripts de automação para configuração do ambiente (start_development.ps1)
 - [x] Script de criação de dados de exemplo (create_sample_data.py)
-- [x] Painel de controle para gerenciamento do projeto (voicetel_panel.bat)
+- [x] Painel de controle para gerenciamento do projeto (4studio_panel.bat)
 - [x] Tarefas VS Code para automação (.vscode/tasks.json)
 - [x] Documentação detalhada no README.md
 
@@ -51,7 +51,7 @@
 ## Instruções para iniciar o projeto:
 
 1. **Método rápido (recomendado):**
-   - Execute o arquivo `voicetel_panel.bat`
+   - Execute o arquivo `4studio_panel.bat`
    - Selecione a opção 1 para iniciar o ambiente completo
    
    OU
@@ -61,14 +61,14 @@
 2. **Método manual:**
    - Backend:
      ```
-     cd voicetel-backend
+     cd 4studio-backend
      .\venv\Scripts\activate
      python manage.py runserver
      ```
    
    - Frontend:
      ```
-     cd voicetel-frontend
+     cd 4studio-frontend
      npm run dev
      ```
 

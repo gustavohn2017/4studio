@@ -1,6 +1,6 @@
-# Guia de Contribuição - VoiceTel
+# Guia de Contribuição - 4studio
 
-Agradecemos seu interesse em contribuir para o projeto VoiceTel! Este documento fornece diretrizes para contribuir com o desenvolvimento do projeto.
+Agradecemos seu interesse em contribuir para o projeto 4studio! Este documento fornece diretrizes para contribuir com o desenvolvimento do projeto.
 
 ## Como Contribuir
 
@@ -15,13 +15,13 @@ Siga as instruções no arquivo [README.md](README.md) para configurar seu ambie
 
 2. **Clone seu fork**
    ```
-   git clone https://github.com/seu-usuario/voicetel.git
-   cd voicetel
+   git clone https://github.com/seu-usuario/4studio.git
+   cd 4studio
    ```
 
 3. **Adicione o repositório original como remote**
    ```
-   git remote add upstream https://github.com/gustavohn2017/voicetel.git
+   git remote add upstream https://github.com/gustavohn2017/4studio.git
    ```
 
 4. **Crie uma branch para sua feature**
@@ -91,19 +91,19 @@ Ao reportar issues, inclua:
 ### Backend (Django)
 
 ```
-voicetel-backend/
+4studio-backend/
 ├── admin_panel/        # Aplicação Django para o painel administrativo
 ├── api/                # Aplicação Django para a API REST
 ├── media/              # Arquivos de mídia enviados pelos usuários
 ├── static/             # Arquivos estáticos
 ├── templates/          # Templates HTML
-└── voicetel/           # Configurações do projeto
+└── 4studio/           # Configurações do projeto
 ```
 
 ### Frontend (Next.js)
 
 ```
-voicetel-frontend/
+4studio-frontend/
 ├── public/             # Arquivos estáticos públicos
 ├── src/
 │   ├── app/            # Rotas da aplicação Next.js
@@ -142,4 +142,4 @@ Ao contribuir para este projeto, você concorda que suas contribuições serão 
 
 ## Contato
 
-Se tiver dúvidas sobre como contribuir, entre em contato com os mantenedores do projeto através de issues no GitHub ou pelo e-mail: suporte@voicetel.com.br
+Se tiver dúvidas sobre como contribuir, entre em contato com os mantenedores do projeto através de issues no GitHub ou pelo e-mail: suporte@4studio.com.br

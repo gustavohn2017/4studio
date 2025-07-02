@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Script para preparar o backend do VoiceTel para deployment
+Script para preparar o backend do 4studio para deployment
 """
 import os
 import sys
@@ -12,11 +12,11 @@ from getpass import getpass
 BASE_DIR = Path(__file__).resolve().parent
 
 def main():
-    print("\n=== Preparando o VoiceTel Backend para Deployment ===\n")
+    print("\n=== Preparando o 4studio Backend para Deployment ===\n")
     
     # Verificar se estamos no diretório correto
     if not (BASE_DIR / "manage.py").exists():
-        print("Erro: Este script deve ser executado no diretório voicetel-backend!")
+        print("Erro: Este script deve ser executado no diretório 4studio-backend!")
         sys.exit(1)
     
     # Verificar se o ambiente virtual está ativado

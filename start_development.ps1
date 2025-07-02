@@ -1,10 +1,10 @@
-# Script para iniciar o ambiente de desenvolvimento VoiceTel
+# Script para iniciar o ambiente de desenvolvimento 4studio
 
-Write-Host "Inicializando ambiente de desenvolvimento VoiceTel..." -ForegroundColor Green
+Write-Host "Inicializando ambiente de desenvolvimento 4studio..." -ForegroundColor Green
 
 # Variáveis de configuração
-$BackendPath = Join-Path $PSScriptRoot "voicetel-backend"
-$FrontendPath = Join-Path $PSScriptRoot "voicetel-frontend"
+$BackendPath = Join-Path $PSScriptRoot "4studio-backend"
+$FrontendPath = Join-Path $PSScriptRoot "4studio-frontend"
 $PythonExe = Join-Path $BackendPath "venv\Scripts\python.exe"
 $PipExe = Join-Path $BackendPath "venv\Scripts\pip.exe"
 
