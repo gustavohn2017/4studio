@@ -74,7 +74,7 @@ def create_env_file(env_file):
     
     use_postgres = input("Usar PostgreSQL? (s/n, n=SQLite): ").lower() == 's'
     if use_postgres:
-        db_name = input("Nome do banco de dados PostgreSQL: ") or "voicetel"
+        db_name = input("Nome do banco de dados PostgreSQL: ") or "4studio"
         db_user = input("Usuário PostgreSQL: ") or "postgres"
         db_password = getpass("Senha PostgreSQL: ")
         db_host = input("Host PostgreSQL: ") or "localhost"
@@ -86,7 +86,7 @@ def create_env_file(env_file):
     cors_origins = input("CORS_ALLOWED_ORIGINS (separados por vírgula): ") or "https://gustavohn2017.github.io"
     
     with open(env_file, 'w') as f:
-        f.write(f"# Arquivo de configuração para VoiceTel Backend\n")
+        f.write(f"# Arquivo de configuração para 4Studio Backend\n")
         f.write(f"# Gerado automaticamente pelo script de preparação para deployment\n\n")
         f.write(f"# Configurações Django\n")
         f.write(f"PRODUCTION=true\n")

@@ -1,5 +1,5 @@
 """
-Production settings for VoiceTel project.
+Production settings for 4Studio project.
 """
 
 import os
@@ -72,8 +72,8 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'VoiceTel <noreply@voicetel.com.br>'
-ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@voicetel.com.br')
+DEFAULT_FROM_EMAIL = '4Studio <noreply@4studio.com.br>'
+ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@4studio.com.br')
 
 # Static files configuration
 STATIC_URL = 'static/'

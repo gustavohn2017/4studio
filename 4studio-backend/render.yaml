@@ -1,11 +1,11 @@
 {
-  "name": "voicetel-api",
+  "name": "4studio-api",
   "env": {
     "PYTHON_VERSION": "3.12.3",
     "PRODUCTION": "true"
   },
   "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
-  "startCommand": "gunicorn voicetel.wsgi:application",
+  "startCommand": "gunicorn 4studio.wsgi:application",
   "healthCheckPath": "/api/health/",
   "envVars": [
     {
@@ -18,7 +18,7 @@
     }
   ],
   "disk": {
-    "name": "voicetel-data",
+    "name": "4studio-data",
     "mountPath": "/data",
     "sizeGB": 1
   }

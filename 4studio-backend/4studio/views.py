@@ -10,7 +10,7 @@ def api_root_view(request):
     """
     # Opção 1: Retornar uma resposta JSON com informações da API
     response_data = {
-        "name": "VoiceTel API",
+        "name": "4Studio API",
         "version": "1.0.0",
         "description": "API para gerenciamento de locuções, URA e amostras de áudio",
         "endpoints": {

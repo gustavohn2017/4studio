@@ -1,5 +1,5 @@
 """
-ASGI config for voicetel project.
+ASGI config for 4studio project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'voicetel.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '4studio.settings')
 
 application = get_asgi_application()

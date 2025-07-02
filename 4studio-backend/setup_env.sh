@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Instalando dependências do projeto VoiceTel..."
+echo "Instalando dependências do projeto 4Studio..."
 
 # Verifica se o ambiente virtual existe
 if [ ! -d "venv" ]; then

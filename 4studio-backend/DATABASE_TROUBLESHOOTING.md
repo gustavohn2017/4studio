@@ -33,7 +33,7 @@ Para verificar a codificação atual do banco de dados, conecte ao PostgreSQL e 
 \l
 ```
 
-Você deve ver `voicetel_db` com codificação `UTF8`.
+Você deve ver `4studio_db` com codificação `UTF8`.
 
 ## 5. Redefinindo o banco de dados
 
@@ -46,8 +46,8 @@ Se continuar tendo problemas, experimente:
 Se necessário, você pode criar o banco de dados manualmente:
 
 ```sql
-DROP DATABASE IF EXISTS voicetel_db;
-CREATE DATABASE voicetel_db WITH ENCODING 'UTF8' TEMPLATE=template0;
+DROP DATABASE IF EXISTS 4studio_db;
+CREATE DATABASE 4studio_db WITH ENCODING 'UTF8' TEMPLATE=template0;
 ```
 
 E depois executar as migrações:

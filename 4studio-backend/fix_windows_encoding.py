@@ -6,7 +6,7 @@ import os
 import sys
 
 def main():
-    print("==== Correção de Codificação PostgreSQL para VoiceTel ====")
+    print("==== Correção de Codificação PostgreSQL para 4Studio ====")
     print("\nEste script vai ajudar a resolver problemas de codificação com PostgreSQL no Windows.")
     print("\nPassos que serão realizados:")
     
@@ -18,9 +18,9 @@ def main():
     print("\n2. Para corrigir o erro de codificação UTF-8:")
     print("   a) Feche todas as conexões com o PostgreSQL")
     print("   b) Execute como administrador o seguinte comando no prompt:")
-    print("      psql -U postgres -c \"DROP DATABASE IF EXISTS voicetel_db;\"")
+    print("      psql -U postgres -c \"DROP DATABASE IF EXISTS 4studio_db;\"")
     print("   c) Depois crie o banco novamente:")
-    print("      psql -U postgres -c \"CREATE DATABASE voicetel_db ENCODING 'UTF8';\"")
+    print("      psql -U postgres -c \"CREATE DATABASE 4studio_db ENCODING 'UTF8';\"")
     
     print("\n3. Depois de criar o banco, execute as migrações:")
     print("   python manage.py migrate")
@@ -48,8 +48,8 @@ DATABASES = {
         if resposta == 's':
             print("\nTentando executar os comandos psql...")
             try:
-                os.system('psql -U postgres -c "DROP DATABASE IF EXISTS voicetel_db;"')
-                os.system('psql -U postgres -c "CREATE DATABASE voicetel_db ENCODING \'UTF8\';"')
+                os.system('psql -U postgres -c "DROP DATABASE IF EXISTS 4studio_db;"')
+                os.system('psql -U postgres -c "CREATE DATABASE 4studio_db ENCODING \'UTF8\';"')
                 print("\nBanco de dados recriado. Execute 'python manage.py migrate' para aplicar as migrações.")
             except Exception as e:
                 print(f"\nErro ao executar os comandos: {e}")

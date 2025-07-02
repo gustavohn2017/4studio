@@ -1,5 +1,5 @@
 @echo off
-echo Instalando dependencias do projeto VoiceTel...
+echo Instalando dependencias do projeto 4Studio...
 
 :: Verifica se o ambiente virtual existe
 if not exist venv (

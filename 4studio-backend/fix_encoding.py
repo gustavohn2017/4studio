@@ -6,7 +6,7 @@ import sys
 import django
 
 # Configurar o ambiente Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'voicetel.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '4studio.settings')
 django.setup()
 
 from django.db import connection

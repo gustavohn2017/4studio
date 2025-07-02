@@ -1,5 +1,5 @@
 """
-WSGI config for voicetel project.
+WSGI config for 4studio project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -14,9 +14,9 @@ from django.core.wsgi import get_wsgi_application
 
 # Use production settings if PRODUCTION environment variable is set
 if os.environ.get('PRODUCTION', False):
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'voicetel.settings_prod')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', '4studio.settings_prod')
 else:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'voicetel.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', '4studio.settings')
 
 # Load environment variables from .env file if present
 env_path = Path(__file__).resolve().parent.parent / '.env'
