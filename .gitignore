@@ -10,7 +10,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# Exclude Python libs but not frontend libs
+/lib/
+/voicetel-backend/lib/
 lib64/
 parts/
 sdist/

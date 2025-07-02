@@ -225,6 +225,41 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    }
    ```
 
+#### Opção 3: Deploy no GitHub Pages
+
+1. Certifique-se de que as configurações do seu repositório estão corretas:
+   - No GitHub, vá para Settings > Pages
+   - Em "Source", selecione "GitHub Actions"
+
+2. As configurações para GitHub Pages já estão incluídas no arquivo `next.config.ts` com:
+   ```typescript
+   output: 'export',
+   basePath: isGithubActions ? `/${repo}` : '',
+   assetPrefix: isGithubActions ? `/${repo}/` : '',
+   ```
+
+3. O workflow para deploy automático já está configurado em `.github/workflows/github-pages.yml`
+
+4. Para testar o build localmente antes de fazer push:
+   ```powershell
+   cd voicetel-frontend
+   npm run build
+   # Verifique se a pasta 'out' foi criada com os arquivos estáticos
+   ```
+   
+5. Para configurar a URL da API para produção:
+   - Vá para Settings > Secrets and variables > Actions
+   - Adicione um novo repositório secret chamado `NEXT_PUBLIC_API_URL` com a URL da sua API em produção
+
+6. Depois de fazer push para a branch main, o workflow do GitHub Actions fará o deploy automaticamente.
+   Você pode acompanhar o progresso na guia Actions do seu repositório.
+
+7. O site estará disponível em `https://seu-usuario.github.io/voicetel/`
+
+8. **Nota:** Por ser um site estático no GitHub Pages, o frontend precisará comunicar-se com uma API externa.
+   Certifique-se de que sua API backend está hospedada em algum lugar acessível publicamente e configure o CORS
+   adequadamente para permitir requisições do seu domínio GitHub Pages.
+
 ## Manutenção
 
 ### Atualizações
