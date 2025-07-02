@@ -260,6 +260,76 @@ Este documento fornece instruções detalhadas para implantação do sistema Voi
    Certifique-se de que sua API backend está hospedada em algum lugar acessível publicamente e configure o CORS
    adequadamente para permitir requisições do seu domínio GitHub Pages.
 
+## Deploy do Backend no Render.com (Alternativa Gratuita ao Heroku)
+
+O Render.com é uma plataforma de hospedagem que oferece um plano gratuito para aplicações Django e é muito fácil de configurar.
+
+### Preparação do Backend para Render
+
+1. **Crie uma conta no Render**
+   - Acesse [render.com](https://render.com) e crie uma conta gratuita
+
+2. **Crie um novo Web Service**
+   - Clique em "New" e escolha "Web Service"
+   - Conecte-se ao seu repositório GitHub
+   - Selecione o repositório `voicetel`
+
+3. **Configure o serviço**
+   - Nome: `voicetel-backend` ou similar
+   - Ambiente: Python
+   - Build Command: `pip install -r requirements.txt && python voicetel-backend/manage.py collectstatic --noinput`
+   - Start Command: `cd voicetel-backend && gunicorn voicetel.wsgi --log-file -`
+   - Selecione o plano gratuito
+
+4. **Configure as variáveis de ambiente**
+   - Adicione as seguintes variáveis de ambiente:
+     - `PRODUCTION=true`
+     - `SECRET_KEY=[sua-chave-secreta]`
+     - `ALLOWED_HOSTS=.onrender.com,voicetel-backend.onrender.com`
+     - `CORS_ALLOWED_ORIGINS=https://gustavohn2017.github.io`
+     - `DATABASE_URL=[seu-banco-de-dados]` (Pode usar o SQLite para testes iniciais ou configurar um PostgreSQL)
+     - `DEBUG=False`
+
+5. **Deploy**
+   - Clique em "Create Web Service"
+   - O deploy será iniciado automaticamente
+   - Aguarde o processo de build e deploy terminar
+
+### Atualizando o Frontend para usar o Backend no Render
+
+1. **Adicione o Secret no GitHub**
+   - No GitHub, vá para Settings > Secrets and Variables > Actions
+   - Adicione um novo repositório secret chamado `NEXT_PUBLIC_API_URL` com o valor `https://voicetel-backend.onrender.com/api`
+
+2. **Force um novo deploy do frontend**
+   - Faça uma pequena alteração no código ou dispare manualmente o workflow do GitHub Actions
+
+3. **Verifique a integração**
+   - Após o deploy, verifique se o frontend está se comunicando corretamente com o backend
+
+## Deploy do Backend em Outras Plataformas
+
+### Railway
+
+1. Crie uma conta no [Railway](https://railway.app/)
+2. Importe seu repositório GitHub
+3. Configure o comando de build e start
+4. Adicione as variáveis de ambiente necessárias
+
+### PythonAnywhere (Alternativa gratuita)
+
+1. Crie uma conta em [PythonAnywhere](https://www.pythonanywhere.com/)
+2. Siga o tutorial deles para implantação de Django
+3. Configure CORS para permitir requisições do seu domínio GitHub Pages
+
+### DigitalOcean App Platform
+
+1. Crie uma conta no [DigitalOcean](https://www.digitalocean.com/)
+2. Crie um novo App na plataforma App Platform
+3. Conecte ao repositório GitHub
+4. Configure as variáveis de ambiente
+5. O deploy será automático
+
 ## Manutenção
 
 ### Atualizações

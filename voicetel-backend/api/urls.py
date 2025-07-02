@@ -5,7 +5,8 @@ from .views import (
     VoiceTypeViewSet,
     AudioSampleViewSet,
     TestimonialViewSet,
-    ContactRequestViewSet
+    ContactRequestViewSet,
+    health_check
 )
 
 router = DefaultRouter()
@@ -17,4 +18,5 @@ router.register(r'contact-requests', ContactRequestViewSet)  # Updated to match 
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('health/', health_check, name='health_check'),
 ]

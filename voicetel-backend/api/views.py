@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import VoiceCategory, VoiceType, AudioSample, Testimonial, ContactRequest
@@ -11,6 +11,11 @@ from .serializers import (
     ContactRequestSerializer
 )
 from .utils import send_contact_email
+
+@api_view(['GET'])
+def health_check(request):
+    """Endpoint para verificação de saúde da API"""
+    return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
 class VoiceCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """Endpoint da API para categorias de voz"""
