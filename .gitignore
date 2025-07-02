@@ -59,3 +59,18 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Deployment files
+postgres.log
+*.bak
+*~
+.vs/
+coverage/
+htmlcov/
+.coverage
+coverage.xml
+
+# Database backups
+*.dump
+*.sql
+*.backup
