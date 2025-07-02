@@ -1,0 +1,133 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}{% if testimonial %}Editar Depoimento{% else %}Adicionar Depoimento{% endif %} - Voicetel Admin{% endblock %}
+
+{% block header %}{% if testimonial %}Editar Depoimento{% else %}Adicionar Novo Depoimento{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="card-modern">
+        <div class="p-6 border-b border-dark-700">
+            <h1 class="flex items-center text-xl font-semibold text-white">
+                <i class="fas fa-{% if testimonial %}edit{% else %}plus{% endif %} mr-3 text-accent-400"></i> 
+                {% if testimonial %}Editar Depoimento{% else %}Novo Depoimento{% endif %}
+            </h1>
+        </div>
+        <div class="p-8">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="form-group-modern">
+                    <label for="client_name" class="form-label-modern">Nome do Cliente <span class="text-red-400">*</span></label>
+                    <input type="text" 
+                           class="input-modern" 
+                           id="client_name" 
+                           name="client_name" 
+                           value="{{ testimonial.client_name|default:'' }}" 
+                           required
+                           placeholder="Digite o nome completo do cliente">
+                </div>
+                
+                <div class="form-group-modern">
+                    <label for="company" class="form-label-modern">Empresa</label>
+                    <input type="text" 
+                           class="input-modern" 
+                           id="company" 
+                           name="company" 
+                           value="{{ testimonial.company|default:'' }}"
+                           placeholder="Nome da empresa (opcional)">
+                    <p class="form-help-modern">Empresa ou organização do cliente</p>
+                </div>
+                
+                <div class="form-group-modern">
+                    <label for="quote" class="form-label-modern">Depoimento <span class="text-red-400">*</span></label>
+                    <textarea class="input-modern resize-none" 
+                              id="quote" 
+                              name="quote" 
+                              rows="4" 
+                              required
+                              placeholder="Digite o depoimento completo do cliente...">{{ testimonial.quote|default:'' }}</textarea>
+                    <p class="form-help-modern">O texto do depoimento que será exibido no site</p>
+                </div>
+                
+                <div class="form-group-modern">
+                    <label for="image" class="form-label-modern">Foto do Cliente</label>
+                    
+                    {% if testimonial and testimonial.image %}
+                    <div class="mb-4 p-4 bg-dark-700/50 rounded-xl border border-dark-600">
+                        <div class="flex items-center space-x-4">
+                            <img src="{{ testimonial.image.url }}" 
+                                 alt="{{ testimonial.client_name }}" 
+                                 class="w-20 h-20 rounded-full object-cover border-2 border-dark-600">
+                            <div>
+                                <p class="text-sm text-gray-300 mb-1">Imagem atual</p>
+                                <p class="text-xs text-gray-500">Envie uma nova imagem para substituir</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="file-upload-modern" 
+                         x-data="{ 
+                            isDragging: false,
+                            fileName: ''
+                         }"
+                         @dragover.prevent="isDragging = true"
+                         @dragleave.prevent="isDragging = false"
+                         @drop.prevent="isDragging = false; handleFiles($event.dataTransfer.files)"
+                         :class="{ 'border-accent-400 bg-accent-500/10': isDragging }">
+                        <input type="file" 
+                               class="hidden" 
+                               id="image" 
+                               name="image" 
+                               accept="image/*"
+                               @change="fileName = $event.target.files[0]?.name || ''">
+                        <label for="image" class="cursor-pointer block">
+                            <div class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-300 mb-1">Clique para selecionar ou arraste uma imagem</p>
+                                <p class="text-sm text-gray-500">PNG, JPG ou GIF até 5MB</p>
+                                <p x-show="fileName" x-text="fileName" class="text-sm text-accent-400 mt-2"></p>
+                            </div>
+                        </label>
+                    </div>
+                    <p class="form-help-modern">Foto do cliente para exibir junto ao depoimento (opcional)</p>
+                </div>
+                
+                <div class="form-group-modern">
+                    <label class="checkbox-label-modern">
+                        <input type="checkbox" 
+                               class="form-checkbox-modern" 
+                               id="active" 
+                               name="active" 
+                               {% if not testimonial or testimonial.active %}checked{% endif %}>
+                        <span class="checkbox-text-modern">Ativo</span>
+                    </label>
+                    <p class="form-help-modern">Desmarque esta opção para ocultar este depoimento no site</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-3 pt-6 border-t border-dark-700">
+                    <a href="{% url 'testimonials_manager' %}" class="btn-secondary-modern">
+                        <i class="fas fa-arrow-left mr-2"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn-primary-modern">
+                        <i class="fas fa-{% if testimonial %}save{% else %}plus{% endif %} mr-2"></i>
+                        {% if testimonial %}Atualizar{% else %}Adicionar{% endif %} Depoimento
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function handleFiles(files) {
+    if (files.length > 0) {
+        const fileInput = document.getElementById('image');
+        fileInput.files = files;
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+    }
+}
+</script>
+{% endblock %}

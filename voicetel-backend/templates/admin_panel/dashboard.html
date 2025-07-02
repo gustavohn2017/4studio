@@ -1,0 +1,273 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Dashboard - VoiceTel Admin{% endblock %}
+
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-accent-600 to-primary-600 rounded-2xl p-8 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">Bem-vindo, {{ request.user.username }}! 👋</h1>
+                <p class="text-blue-100 text-lg">Gerencie seus áudios, depoimentos e solicitações de forma intuitiva</p>
+            </div>
+            <div class="hidden md:block">
+                <div class="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center">
+                    <i class="fas fa-microphone-alt text-4xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Áudios -->
+        <div class="stat-card">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm font-medium">Total de Áudios</p>
+                    <p class="text-3xl font-bold text-white mt-2">{{ audio_count }}</p>
+                    <p class="text-gray-400 text-sm mt-1">Amostras de áudio</p>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'audio_manager' %}" class="btn-primary-modern w-full text-center block">
+                    Gerenciar Áudios
+                </a>
+            </div>
+        </div>
+
+        <!-- Depoimentos -->
+        <div class="stat-card">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm font-medium">Depoimentos</p>
+                    <p class="text-3xl font-bold text-white mt-2">{{ testimonials_count }}</p>
+                    <p class="text-gray-400 text-sm mt-1">{{ active_testimonials }} ativos</p>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'testimonials_manager' %}" class="btn-primary-modern w-full text-center block">
+                    Gerenciar Depoimentos
+                </a>
+            </div>
+        </div>
+
+        <!-- Solicitações -->
+        <div class="stat-card">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm font-medium">Solicitações</p>
+                    <p class="text-3xl font-bold text-white mt-2">{{ contact_requests }}</p>
+                    <p class="text-gray-400 text-sm mt-1">{{ pending_requests }} pendentes</p>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'contact_requests' %}" class="btn-primary-modern w-full text-center block">
+                    Ver Solicitações
+                </a>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="stat-card">
+            <div>
+                <p class="text-gray-400 text-sm font-medium mb-4">Ações Rápidas</p>
+                <div class="space-y-3">
+                    <a href="{% url 'audio_upload' %}" class="flex items-center text-gray-300 hover:text-white transition-colors group">
+                        <div class="w-8 h-8 bg-accent-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-accent-500 transition-colors">
+                            <i class="fas fa-plus text-sm"></i>
+                        </div>
+                        <span class="text-sm">Adicionar Áudio</span>
+                    </a>
+                    <a href="{% url 'testimonial_create' %}" class="flex items-center text-gray-300 hover:text-white transition-colors group">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-500 transition-colors">
+                            <i class="fas fa-plus text-sm"></i>
+                        </div>
+                        <span class="text-sm">Adicionar Depoimento</span>
+                    </a>
+                    {% if pending_requests > 0 %}
+                    <a href="{% url 'contact_requests' %}" class="flex items-center text-gray-300 hover:text-white transition-colors group">
+                        <div class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-yellow-500 transition-colors">
+                            <i class="fas fa-check text-sm"></i>
+                        </div>
+                        <span class="text-sm">Atender Solicitações</span>
+                        <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">{{ pending_requests }}</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Áudios Recentes -->
+        <div class="card-modern">
+            <div class="p-6 border-b border-dark-700">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">Áudios Recentes</h2>
+                    <a href="{% url 'audio_manager' %}" class="text-accent-400 hover:text-accent-300 text-sm font-medium">
+                        Ver Todos <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="p-6">
+                {% if recent_audio %}
+                    <div class="space-y-4">
+                        {% for audio in recent_audio %}
+                        <div class="flex items-center justify-between p-4 bg-dark-700/50 rounded-xl hover:bg-dark-700 transition-colors">
+                            <div class="flex-1">
+                                <h3 class="font-medium text-white">{{ audio.title }}</h3>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="badge-modern badge-info">{{ audio.category.name }}</span>
+                                    <span class="badge-modern badge-success">{{ audio.voice_type.name }}</span>
+                                    {% if audio.featured %}
+                                        <span class="badge-modern badge-warning">Destaque</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 ml-4">
+                                <audio controls class="w-32 h-8 rounded-lg">
+                                    <source src="{{ audio.audio_file.url }}" type="audio/mpeg">
+                                </audio>
+                                <a href="{% url 'audio_edit' audio.id %}" 
+                                   class="w-8 h-8 bg-dark-600 hover:bg-accent-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-colors">
+                                    <i class="fas fa-edit text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-music text-gray-400 text-xl"></i>
+                        </div>
+                        <p class="text-gray-400 mb-4">Nenhum áudio cadastrado</p>
+                        <a href="{% url 'audio_upload' %}" class="btn-primary-modern">Adicionar Áudio</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="space-y-6">
+            <!-- Distribuição por Categoria -->
+            <div class="card-modern">
+                <div class="p-6 border-b border-dark-700">
+                    <h2 class="text-xl font-semibold text-white">Distribuição por Categoria</h2>
+                </div>
+                <div class="p-6">
+                    {% if categories %}
+                        <div class="space-y-3">
+                            {% for category in categories %}
+                            <div class="flex items-center justify-between p-3 bg-dark-700/30 rounded-lg hover:bg-dark-700/50 transition-colors">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-accent-500 rounded-full mr-3"></div>
+                                    <span class="text-gray-300">{{ category.name }}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-white font-medium">{{ category.samples_count }}</span>
+                                    <a href="{% url 'audio_manager' %}?category={{ category.id }}" 
+                                       class="text-accent-400 hover:text-accent-300 text-sm">
+                                        <i class="fas fa-filter"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-gray-400">Nenhuma categoria cadastrada</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Distribuição por Tipo de Voz -->
+            <div class="card-modern">
+                <div class="p-6 border-b border-dark-700">
+                    <h2 class="text-xl font-semibold text-white">Distribuição por Tipo de Voz</h2>
+                </div>
+                <div class="p-6">
+                    {% if voice_types %}
+                        <div class="space-y-3">
+                            {% for voice_type in voice_types %}
+                            <div class="flex items-center justify-between p-3 bg-dark-700/30 rounded-lg hover:bg-dark-700/50 transition-colors">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-dark-600 rounded-lg flex items-center justify-center mr-3">
+                                        {% if voice_type.gender == 'male' %}
+                                        <i class="fas fa-mars text-blue-400"></i>
+                                        {% elif voice_type.gender == 'female' %}
+                                        <i class="fas fa-venus text-pink-400"></i>
+                                        {% elif voice_type.gender == 'ai' %}
+                                        <i class="fas fa-robot text-purple-400"></i>
+                                        {% endif %}
+                                    </div>
+                                    <span class="text-gray-300">{{ voice_type.name }}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-white font-medium">{{ voice_type.samples_count }}</span>
+                                    <a href="{% url 'audio_manager' %}?voice_type={{ voice_type.id }}" 
+                                       class="text-accent-400 hover:text-accent-300 text-sm">
+                                        <i class="fas fa-filter"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-gray-400">Nenhum tipo de voz cadastrado</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Chart -->
+    <div class="card-modern">
+        <div class="p-6 border-b border-dark-700">
+            <h2 class="text-xl font-semibold text-white">Resumo do Sistema</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-r from-accent-600 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-database text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">{{ audio_count|add:testimonials_count }}</h3>
+                    <p class="text-gray-400">Total de Conteúdos</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-star text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">{{ active_testimonials }}</h3>
+                    <p class="text-gray-400">Depoimentos Ativos</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-clock text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">{{ pending_requests }}</h3>
+                    <p class="text-gray-400">Solicitações Pendentes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Gerenciar Áudios - VoiceTel Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .audio-player {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .filter-card {
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Gerenciar Áudios</h1>
+    <a href="{% url 'audio_upload' %}" class="btn btn-success">
+        <i class="fas fa-plus me-2"></i> Novo Áudio
+    </a>
+</div>
+
+<!-- Filter Card -->
+<div class="card filter-card">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Filtros</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" action="{% url 'audio_manager' %}">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="category" class="form-label">Categoria</label>
+                    <select name="category" id="category" class="form-select">
+                        <option value="">Todas as categorias</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if selected_category|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="voice_type" class="form-label">Tipo de Voz</label>
+                    <select name="voice_type" id="voice_type" class="form-select">
+                        <option value="">Todos os tipos</option>
+                        {% for voice_type in voice_types %}
+                            <option value="{{ voice_type.id }}" {% if selected_voice_type|stringformat:"s" == voice_type.id|stringformat:"s" %}selected{% endif %}>
+                                {{ voice_type.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="featured" class="form-label">Em Destaque</label>
+                    <select name="featured" id="featured" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="true" {% if selected_featured == "true" %}selected{% endif %}>Em destaque</option>
+                        <option value="false" {% if selected_featured == "false" %}selected{% endif %}>Sem destaque</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="q" class="form-label">Pesquisar</label>
+                    <input type="text" name="q" id="q" class="form-control" placeholder="Título ou descrição" value="{{ search_query|default:'' }}">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter me-2"></i> Filtrar
+                </button>
+                {% if request.GET %}
+                    <a href="{% url 'audio_manager' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i> Limpar filtros
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Audio Table -->
+{% if audio_samples %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Tipo de Voz</th>
+                    <th>Em Destaque</th>
+                    <th>Áudio</th>
+                    <th>Data</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for audio in audio_samples %}
+                    <tr>
+                        <td>{{ audio.title }}</td>
+                        <td>{{ audio.category }}</td>
+                        <td>{{ audio.voice_type }}</td>
+                        <td>
+                            {% if audio.featured %}
+                                <span class="badge bg-success">Sim</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Não</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <audio controls class="audio-player">
+                                <source src="{{ audio.audio_file.url }}" type="audio/mpeg">
+                                Seu navegador não suporta o elemento de áudio.
+                            </audio>
+                        </td>
+                        <td>{{ audio.created_at|date:"d/m/Y" }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'audio_edit' audio.id %}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'audio_delete' audio.id %}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Nenhum áudio encontrado. {% if request.GET %}Tente ajustar os filtros ou {% endif %}<a href="{% url 'audio_upload' %}" class="alert-link">adicione um novo</a>.
+    </div>
+{% endif %}
+{% endblock %}

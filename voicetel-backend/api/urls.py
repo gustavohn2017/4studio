@@ -1,0 +1,20 @@
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import (
+    VoiceCategoryViewSet,
+    VoiceTypeViewSet,
+    AudioSampleViewSet,
+    TestimonialViewSet,
+    ContactRequestViewSet
+)
+
+router = DefaultRouter()
+router.register(r'categories', VoiceCategoryViewSet)
+router.register(r'voice-types', VoiceTypeViewSet)
+router.register(r'audio-samples', AudioSampleViewSet)
+router.register(r'testimonials', TestimonialViewSet)
+router.register(r'contact-requests', ContactRequestViewSet)  # Updated to match frontend expectation
+
+urlpatterns = [
+    path('', include(router.urls)),
+]

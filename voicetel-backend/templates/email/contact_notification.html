@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Solicitação de Contato</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .header {
+            background-color: #2563eb;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+            margin-top: 20px;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        .info-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Nova Solicitação de Contato</h2>
+        </div>
+        <div class="content">
+            <p>Uma nova solicitação de contato foi recebida pelo site da VoiceTel.</p>
+            
+            <div>
+                <div class="info-label">Nome:</div>
+                <div class="info-value">{{ name }}</div>
+                
+                <div class="info-label">E-mail:</div>
+                <div class="info-value">{{ email }}</div>
+                
+                <div class="info-label">Telefone:</div>
+                <div class="info-value">{{ phone }}</div>
+                
+                <div class="info-label">Empresa:</div>
+                <div class="info-value">{{ company|default:"Não informado" }}</div>
+                
+                <div class="info-label">Tipo de Serviço:</div>
+                <div class="info-value">{{ service_type }}</div>
+                
+                <div class="info-label">Data do Contato:</div>
+                <div class="info-value">{{ created_at }}</div>
+                  <div class="info-label">Mensagem:</div>
+                <div class="info-value" style="white-space: pre-line;">{{ message }}</div>
+                
+                <div class="info-label">Arquivo Anexado:</div>
+                <div class="info-value">
+                    {% if has_attachment %}
+                    <strong>Sim</strong> - O arquivo está anexado a este e-mail.
+                    {% else %}
+                    <span>Não</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <p>Acesse o painel administrativo para mais detalhes e para marcar esta solicitação como atendida.</p>
+        </div>
+        <div class="footer">
+            <p>Este é um e-mail automático do sistema VoiceTel. Por favor, não responda diretamente a este e-mail.</p>
+            <p>© VoiceTel {% now "Y" %} - Todos os direitos reservados</p>
+        </div>
+    </div>
+</body>
+</html>

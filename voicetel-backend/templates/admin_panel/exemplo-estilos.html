@@ -1,0 +1,377 @@
+<!-- =================================================================
+     VoiceTel Admin Panel - Exemplo de Uso dos Novos Estilos
+     ================================================================= -->
+
+<!-- Exemplo de template usando a nova arquitetura CSS -->
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Exemplo - VoiceTel Admin{% endblock %}
+
+{% block header %}Exemplo de Componentes{% endblock %}
+
+{% block content %}
+<div class="voicetel-container">
+    
+    <!-- Seção de Cards Modernos -->
+    <section class="voicetel-section">
+        <h2>Cards Modernos</h2>
+        <div class="grid-responsive">
+            
+            <!-- Card com Glassmorphism -->
+            <div class="card-modern glass hover-card">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-chart-line text-2xl text-accent-400 mr-3"></i>
+                        <h3 class="text-lg font-semibold">Estatísticas</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Card com efeito glassmorphism usando as novas classes.</p>
+                    <button class="btn-primary-modern">Ver Detalhes</button>
+                </div>
+            </div>
+            
+            <!-- Card com Hover Effects -->
+            <div class="card-modern hover-lift">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-users text-2xl text-primary-400 mr-3"></i>
+                        <h3 class="text-lg font-semibold">Usuários</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Card com efeito de elevação no hover.</p>
+                    <button class="btn-secondary-modern">Gerenciar</button>
+                </div>
+            </div>
+            
+            <!-- Card com Glow Effect -->
+            <div class="card-modern hover-glow">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-music text-2xl text-purple-400 mr-3"></i>
+                        <h3 class="text-lg font-semibold">Áudios</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Card com efeito de brilho no hover.</p>
+                    <button class="btn-enhanced bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                        Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Seção de Formulários -->
+    <section class="voicetel-section">
+        <h2>Formulários Modernos</h2>
+        
+        <div class="card-modern">
+            <div class="p-6">
+                <form class="space-y-6">
+                    
+                    <!-- Input Moderno -->
+                    <div class="form-group-stacked">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" class="input-modern" 
+                               placeholder="Digite seu nome completo">
+                    </div>
+                    
+                    <!-- Select Moderno -->
+                    <div class="form-group-stacked">
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria" name="categoria" class="input-modern">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="musica">Música</option>
+                            <option value="voz">Voz</option>
+                            <option value="efeitos">Efeitos</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Textarea Moderno -->
+                    <div class="form-group-stacked">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" name="descricao" rows="4" class="input-modern auto-grow"
+                                  placeholder="Descreva os detalhes..."></textarea>
+                    </div>
+                    
+                    <!-- File Upload com Drag & Drop -->
+                    <div class="form-group-stacked">
+                        <label>Upload de Arquivo</label>
+                        <div class="file-upload-area">
+                            <input type="file" name="arquivo" accept="audio/*" class="hidden">
+                            <div class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-400 mb-2">Arraste e solte o arquivo aqui</p>
+                                <p class="text-sm text-gray-500">ou clique para selecionar</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Checkbox e Radio Groups -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Checkbox Group -->
+                        <div class="form-group-stacked">
+                            <label>Opções</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="opcao1" name="opcoes[]" value="opcao1">
+                                    <label for="opcao1">Opção 1</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="opcao2" name="opcoes[]" value="opcao2">
+                                    <label for="opcao2">Opção 2</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Radio Group -->
+                        <div class="form-group-stacked">
+                            <label>Tipo</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="tipo1" name="tipo" value="tipo1">
+                                    <label for="tipo1">Tipo 1</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="tipo2" name="tipo" value="tipo2">
+                                    <label for="tipo2">Tipo 2</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="form-group-inline justify-end">
+                        <button type="button" class="btn-secondary-modern">Cancelar</button>
+                        <button type="submit" class="btn-primary-modern">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Seção de Badges e Alertas -->
+    <section class="voicetel-section">
+        <h2>Badges e Alertas</h2>
+        
+        <!-- Badges -->
+        <div class="mb-6">
+            <h3 class="mb-4">Badges Modernos</h3>
+            <div class="flex flex-wrap gap-3">
+                <span class="badge-modern badge-primary">Primary</span>
+                <span class="badge-modern badge-success">Success</span>
+                <span class="badge-modern badge-warning">Warning</span>
+                <span class="badge-modern badge-danger">Danger</span>
+                <span class="badge-modern badge-info">Info</span>
+                <span class="badge-modern badge-purple">Purple</span>
+                <span class="badge-modern badge-pink">Pink</span>
+                <span class="badge-modern badge-cyan">Cyan</span>
+            </div>
+        </div>
+        
+        <!-- Alertas -->
+        <div class="space-y-4">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle mr-3"></i>
+                Operação realizada com sucesso!
+            </div>
+            
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle mr-3"></i>
+                Atenção: Verifique os dados antes de continuar.
+            </div>
+            
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle mr-3"></i>
+                Erro: Não foi possível processar a solicitação.
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle mr-3"></i>
+                Informação: Esta é uma mensagem informativa.
+            </div>
+        </div>
+    </section>
+    
+    <!-- Seção de Tabelas -->
+    <section class="voicetel-section">
+        <h2>Tabela Moderna</h2>
+        
+        <div class="table-modern">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Arquivo de Áudio 1</td>
+                        <td>Música</td>
+                        <td><span class="badge-modern badge-success">Ativo</span></td>
+                        <td>2024-01-15</td>
+                        <td>
+                            <button class="text-accent-400 hover:text-accent-300 mr-2" data-tooltip="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-400 hover:text-red-300" data-tooltip="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Arquivo de Áudio 2</td>
+                        <td>Voz</td>
+                        <td><span class="badge-modern badge-warning">Pendente</span></td>
+                        <td>2024-01-14</td>
+                        <td>
+                            <button class="text-accent-400 hover:text-accent-300 mr-2" data-tooltip="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-400 hover:text-red-300" data-tooltip="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+    <!-- Seção de Animações -->
+    <section class="voicetel-section">
+        <h2>Exemplos de Animações</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-stagger">
+            
+            <div class="card-modern p-6 text-center animate-fade-in">
+                <i class="fas fa-star text-3xl text-yellow-400 mb-4 animate-bounce-subtle"></i>
+                <h3>Fade In</h3>
+                <p class="text-gray-400">Card com animação fade-in</p>
+            </div>
+            
+            <div class="card-modern p-6 text-center animate-slide-up">
+                <i class="fas fa-rocket text-3xl text-blue-400 mb-4 animate-float"></i>
+                <h3>Slide Up</h3>
+                <p class="text-gray-400">Card com animação slide-up</p>
+            </div>
+            
+            <div class="card-modern p-6 text-center animate-pulse-glow">
+                <i class="fas fa-magic text-3xl text-purple-400 mb-4"></i>
+                <h3>Pulse Glow</h3>
+                <p class="text-gray-400">Card com efeito pulse-glow</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Seção de Utilities -->
+    <section class="voicetel-section">
+        <h2>Classes Utilitárias</h2>
+        
+        <div class="space-y-6">
+            
+            <!-- Text Clamp -->
+            <div class="card-modern p-6">
+                <h3 class="mb-4">Text Clamp</h3>
+                <p class="line-clamp-2 text-gray-400">
+                    Este é um exemplo de texto que será truncado após duas linhas usando a classe line-clamp-2. 
+                    Este texto é mais longo para demonstrar como a truncagem funciona com múltiplas linhas de texto.
+                    Apenas as duas primeiras linhas serão visíveis e o resto será truncado com reticências.
+                </p>
+            </div>
+            
+            <!-- Glass Effects -->
+            <div class="relative">
+                <div class="glass-accent p-6 rounded-xl">
+                    <h3 class="mb-4">Glass Effect</h3>
+                    <p class="text-gray-300">
+                        Este container usa o efeito glassmorphism com a classe glass-accent.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Gradients -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="gradient-primary p-6 rounded-xl text-white text-center">
+                    <h4>Gradient Primary</h4>
+                </div>
+                <div class="gradient-accent p-6 rounded-xl text-white text-center">
+                    <h4>Gradient Accent</h4>
+                </div>
+                <div class="gradient-dark p-6 rounded-xl text-white text-center">
+                    <h4>Gradient Dark</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- JavaScript Personalizado -->
+<script>
+// Exemplo de uso das funcionalidades JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Exemplo de notificação
+    const showNotificationBtn = document.createElement('button');
+    showNotificationBtn.textContent = 'Mostrar Notificação';
+    showNotificationBtn.className = 'btn-primary-modern mb-4';
+    showNotificationBtn.onclick = function() {
+        // Acessa a função global adminPanel
+        if (typeof adminPanel === 'function') {
+            const panel = adminPanel();
+            panel.showNotification('Esta é uma notificação de exemplo!', 'success');
+        }
+    };
+    
+    // Adiciona o botão ao primeiro card
+    const firstCard = document.querySelector('.card-modern .p-6');
+    if (firstCard) {
+        firstCard.appendChild(showNotificationBtn);
+    }
+    
+    // Exemplo de copy to clipboard
+    const copyButtons = document.querySelectorAll('[data-copy]');
+    copyButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const textToCopy = this.getAttribute('data-copy');
+            if (window.VoiceTelUtils) {
+                await window.VoiceTelUtils.copyToClipboard(textToCopy);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Estilos específicos para esta página */
+.demo-background {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+}
+
+.feature-showcase {
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-showcase::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+</style>
+{% endblock %}

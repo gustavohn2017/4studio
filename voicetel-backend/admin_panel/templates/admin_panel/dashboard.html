@@ -1,0 +1,209 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Dashboard - VoiceTel Admin{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Total de Áudios</h6>
+                        <h2 class="mb-0">{{ total_audio_samples }}</h2>
+                    </div>
+                    <i class="fas fa-headphones fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a href="{% url 'audio_manager' %}" class="text-white text-decoration-none">Ver detalhes</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Categorias</h6>
+                        <h2 class="mb-0">{{ total_categories }}</h2>
+                    </div>
+                    <i class="fas fa-list fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a href="/admin/api/voicecategory/" class="text-white text-decoration-none">Ver detalhes</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Depoimentos</h6>
+                        <h2 class="mb-0">{{ total_testimonials }}</h2>
+                    </div>
+                    <i class="fas fa-quote-right fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a href="{% url 'testimonials_manager' %}" class="text-white text-decoration-none">Ver detalhes</a>
+                <i class="fas fa-angle-right text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Contact Requests -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Solicitações de Contato Recentes</h5>
+                <a href="{% url 'contact_requests' %}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+            </div>
+            <div class="card-body">
+                {% if recent_contacts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Data</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contact in recent_contacts %}
+                                    <tr>
+                                        <td>{{ contact.name }}</td>
+                                        <td>{{ contact.email }}</td>
+                                        <td>{{ contact.created_at|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'contact_request_detail' contact.id %}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">Nenhuma solicitação de contato pendente.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Distribution -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Áudios por Categoria</h5>
+                <a href="{% url 'audio_manager' %}" class="btn btn-sm btn-outline-primary">Gerenciar</a>
+            </div>
+            <div class="card-body">
+                {% if category_counts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Total</th>
+                                    <th>Visualizar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in category_counts %}
+                                    <tr>
+                                        <td>{{ category.name }}</td>
+                                        <td><span class="badge bg-primary">{{ category.sample_count }}</span></td>
+                                        <td>
+                                            <a href="{% url 'audio_manager' %}?category={{ category.id }}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-filter"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">Nenhuma categoria cadastrada.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Uploads -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Uploads Recentes</h5>
+                <a href="{% url 'audio_upload' %}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus me-1"></i> Novo Upload
+                </a>
+            </div>
+            <div class="card-body">
+                {% if recent_uploads %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Categoria</th>
+                                    <th>Tipo de Voz</th>
+                                    <th>Em Destaque</th>
+                                    <th>Data de Upload</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for audio in recent_uploads %}
+                                    <tr>
+                                        <td>{{ audio.title }}</td>
+                                        <td>{{ audio.category }}</td>
+                                        <td>{{ audio.voice_type }}</td>
+                                        <td>
+                                            {% if audio.featured %}
+                                                <span class="badge bg-success">Sim</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Não</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ audio.created_at|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'audio_edit' audio.id %}" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'audio_delete' audio.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">Nenhum áudio foi enviado recentemente.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

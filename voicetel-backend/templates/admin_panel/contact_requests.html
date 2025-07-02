@@ -1,0 +1,546 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Solicitações de Contato - VoiceTel Admin{% endblock %}
+
+{% block header %}Solicitações de Contato{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 p-6">
+    <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Hero Header -->
+        <div class="relative overflow-hidden bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-3xl border border-dark-700/50 backdrop-blur-sm">
+            <div class="absolute inset-0 bg-pattern-dots opacity-30"></div>
+            <div class="relative p-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-6 lg:space-y-0">
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-warning-600 to-info-600 rounded-2xl flex items-center justify-center shadow-xl">
+                                <i class="fas fa-envelope text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                                    Central de Contatos
+                                </h1>
+                                <p class="text-gray-400 text-lg">Gerencie solicitações de orçamento e atendimento</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700 rounded-xl px-4 py-3 flex items-center space-x-3">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white">{{ total_requests_count }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wide">Total</div>
+                            </div>
+                            <div class="w-px h-8 bg-dark-600"></div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-warning-400">{{ pending_requests_count }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wide">Pendentes</div>
+                            </div>
+                        </div>
+                        <button onclick="window.location.reload()" 
+                                class="group relative bg-gradient-to-r from-warning-600 to-info-600 hover:from-warning-700 hover:to-info-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center space-x-2">
+                            <i class="fas fa-sync-alt text-sm"></i>
+                            <span>Atualizar</span>
+                            <div class="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Search & Filters -->
+        <div class="relative bg-dark-800/40 backdrop-blur-xl border border-dark-700/50 rounded-2xl shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-r from-warning-600/5 to-info-600/5 rounded-2xl"></div>
+            <div class="relative p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-search text-warning-400 text-sm"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white">Filtros e Pesquisa</h3>
+                    </div>
+                    <button type="button" 
+                            id="toggle-filters" 
+                            class="text-gray-400 hover:text-white transition-colors lg:hidden">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                
+                <form method="get" id="filter-form" class="space-y-6">
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request.GET.search }}"
+                               placeholder="Buscar por nome, email, empresa..."
+                               class="w-full pl-12 pr-4 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white placeholder-gray-400 focus:border-warning-500 focus:ring-2 focus:ring-warning-500/20 transition-all duration-300">
+                    </div>
+                    
+                    <!-- Filter Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="space-y-2">
+                            <label for="status" class="block text-sm font-medium text-gray-300">Status</label>
+                            <select name="status" id="status" class="w-full px-4 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white focus:border-warning-500 focus:ring-2 focus:ring-warning-500/20 transition-all duration-300">
+                                <option value="">Todos os status</option>
+                                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pendentes</option>
+                                <option value="contacted" {% if request.GET.status == 'contacted' %}selected{% endif %}>Atendidos</option>
+                            </select>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="service_type" class="block text-sm font-medium text-gray-300">Serviço</label>
+                            <select name="service_type" id="service_type" class="w-full px-4 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white focus:border-warning-500 focus:ring-2 focus:ring-warning-500/20 transition-all duration-300">
+                                <option value="">Todos os serviços</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if request.GET.service_type|add:"0" == category.id %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="has_script" class="block text-sm font-medium text-gray-300">Anexo</label>
+                            <select name="has_script" id="has_script" class="w-full px-4 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white focus:border-warning-500 focus:ring-2 focus:ring-warning-500/20 transition-all duration-300">
+                                <option value="">Todos</option>
+                                <option value="yes" {% if request.GET.has_script == 'yes' %}selected{% endif %}>Com anexo</option>
+                                <option value="no" {% if request.GET.has_script == 'no' %}selected{% endif %}>Sem anexo</option>
+                            </select>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="date_range" class="block text-sm font-medium text-gray-300">Período</label>
+                            <select name="date_range" id="date_range" class="w-full px-4 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white focus:border-warning-500 focus:ring-2 focus:ring-warning-500/20 transition-all duration-300">
+                                <option value="">Todas as datas</option>
+                                <option value="today" {% if request.GET.date_range == 'today' %}selected{% endif %}>Hoje</option>
+                                <option value="week" {% if request.GET.date_range == 'week' %}selected{% endif %}>Esta semana</option>
+                                <option value="month" {% if request.GET.date_range == 'month' %}selected{% endif %}>Este mês</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button type="submit" 
+                                class="flex-1 sm:flex-none bg-gradient-to-r from-warning-600 to-warning-700 hover:from-warning-700 hover:to-warning-800 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center space-x-2">
+                            <i class="fas fa-search text-sm"></i>
+                            <span>Aplicar Filtros</span>
+                        </button>
+                        
+                        {% if request.GET.status or request.GET.service_type or request.GET.has_script or request.GET.search or request.GET.date_range %}
+                            <a href="{% url 'contact_requests' %}" 
+                               class="flex-1 sm:flex-none bg-dark-700 hover:bg-dark-600 text-gray-300 hover:text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 border border-dark-600 hover:border-dark-500 flex items-center justify-center space-x-2">
+                                <i class="fas fa-times text-sm"></i>
+                                <span>Limpar Filtros</span>
+                            </a>
+                        {% endif %}
+                        
+                        <button type="button" 
+                                onclick="exportData()" 
+                                class="flex-1 sm:flex-none bg-info-600 hover:bg-info-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center space-x-2">
+                            <i class="fas fa-download text-sm"></i>
+                            <span>Exportar</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact Requests Grid -->
+        {% if contact_requests %}
+            <div class="relative bg-dark-800/40 backdrop-blur-xl border border-dark-700/50 rounded-2xl shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-r from-warning-600/5 to-info-600/5 rounded-2xl"></div>
+                <div class="relative">
+                    <!-- Header -->
+                    <div class="p-6 border-b border-dark-700/50">
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-list text-warning-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">Lista de Solicitações</h3>
+                                    <p class="text-sm text-gray-400">{{ contact_requests.count }} solicitações encontradas</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <!-- View Toggle -->
+                                <div class="bg-dark-700/50 rounded-xl p-1 flex">
+                                    <button type="button" 
+                                            id="grid-view-btn" 
+                                            class="px-3 py-2 rounded-lg bg-warning-600 text-white transition-all duration-300">
+                                        <i class="fas fa-th-large text-sm"></i>
+                                    </button>
+                                    <button type="button" 
+                                            id="table-view-btn" 
+                                            class="px-3 py-2 rounded-lg text-gray-400 hover:text-white transition-all duration-300">
+                                        <i class="fas fa-table text-sm"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Sort Options -->
+                                <select id="sort-select" class="bg-dark-700/50 border border-dark-600 rounded-xl px-3 py-2 text-sm text-white focus:border-warning-500 focus:ring-2 focus:ring-warning-500/20">
+                                    <option value="newest">Mais recentes</option>
+                                    <option value="oldest">Mais antigos</option>
+                                    <option value="pending">Pendentes primeiro</option>
+                                    <option value="contacted">Atendidos primeiro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grid View (Default) -->
+                    <div id="grid-view" class="p-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {% for request in contact_requests %}
+                            <div class="group relative bg-dark-700/30 backdrop-blur-sm border border-dark-600/50 rounded-2xl p-6 hover:border-warning-500/30 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] {% if not request.contacted %}ring-1 ring-warning-500/20{% endif %}">
+                                <!-- Priority Badge -->
+                                {% if not request.contacted %}
+                                <div class="absolute -top-2 -right-2 w-4 h-4 bg-warning-500 rounded-full pulse-animation"></div>
+                                {% endif %}
+                                
+                                <!-- Header -->
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-user text-warning-400"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-white group-hover:text-warning-300 transition-colors">{{ request.name }}</h4>
+                                            <p class="text-sm text-gray-400">{{ request.email }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex flex-col items-end space-y-2">
+                                        {% if request.contacted %}
+                                            <span class="badge-success-sm">
+                                                <i class="fas fa-check mr-1"></i>
+                                                Atendido
+                                            </span>
+                                        {% else %}
+                                            <span class="badge-warning-sm">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                Pendente
+                                            </span>
+                                        {% endif %}
+                                        
+                                        {% if request.script_file %}
+                                            <span class="badge-info-sm">
+                                                <i class="fas fa-paperclip mr-1"></i>
+                                                Anexo
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Details -->
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-400">Telefone:</span>
+                                        <span class="text-gray-300 font-medium">{{ request.phone }}</span>
+                                    </div>
+                                    
+                                    {% if request.company %}
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-400">Empresa:</span>
+                                        <span class="text-gray-300 font-medium">{{ request.company }}</span>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if request.service_type %}
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-400">Serviço:</span>
+                                        <span class="badge-info-sm">{{ request.service_type.name }}</span>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-400">Data:</span>
+                                        <span class="text-gray-300 font-medium">{{ request.created_at|date:"d/m/Y H:i" }}</span>
+                                    </div>
+                                    
+                                    {% if request.message %}
+                                    <div class="pt-3 border-t border-dark-600/50">
+                                        <p class="text-sm text-gray-400 line-clamp-2">{{ request.message|truncatechars:120 }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Actions -->
+                                <div class="flex items-center justify-between mt-6 pt-4 border-t border-dark-600/50">
+                                    {% if request.script_file %}
+                                        <a href="{{ request.script_file.url }}" 
+                                           download
+                                           class="text-info-400 hover:text-info-300 text-sm font-medium transition-colors">
+                                            <i class="fas fa-download mr-1"></i>
+                                            Baixar Anexo
+                                        </a>
+                                    {% else %}
+                                        <span></span>
+                                    {% endif %}
+                                    
+                                    <div class="flex items-center space-x-2">
+                                        <a href="{% url 'contact_request_detail' request.id %}" 
+                                           class="w-8 h-8 bg-dark-600 hover:bg-warning-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-300 group">
+                                            <i class="fas fa-eye text-xs group-hover:scale-110 transition-transform"></i>
+                                        </a>
+                                        
+                                        {% if not request.contacted %}
+                                        <a href="{% url 'mark_contacted' request.id %}?next={{ request.get_absolute_url }}" 
+                                           class="w-8 h-8 bg-dark-600 hover:bg-success-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-300 group">
+                                            <i class="fas fa-check text-xs group-hover:scale-110 transition-transform"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Table View (Hidden by default) -->
+                    <div id="table-view" class="hidden overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-dark-700/50">
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Cliente</th>
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Contato</th>
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Empresa</th>
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Serviço</th>
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Data</th>
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Status</th>
+                                    <th class="text-left py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Anexo</th>
+                                    <th class="text-right py-4 px-6 text-sm font-semibold text-gray-300 uppercase tracking-wide">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-dark-700/30">
+                                {% for request in contact_requests %}
+                                <tr class="hover:bg-dark-700/20 transition-colors {% if not request.contacted %}bg-warning-500/5{% endif %}">
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-user text-warning-400 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-white">{{ request.name }}</div>
+                                                <div class="text-sm text-gray-400">{{ request.email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6 text-gray-300">{{ request.phone }}</td>
+                                    <td class="py-4 px-6 text-gray-300">{{ request.company|default:"-" }}</td>
+                                    <td class="py-4 px-6">
+                                        {% if request.service_type %}
+                                            <span class="badge-info-sm">{{ request.service_type.name }}</span>
+                                        {% else %}
+                                            <span class="text-gray-500">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <div class="text-gray-300 font-medium">{{ request.created_at|date:"d/m/Y" }}</div>
+                                        <div class="text-sm text-gray-500">{{ request.created_at|date:"H:i" }}</div>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        {% if request.contacted %}
+                                            <span class="badge-success-sm">
+                                                <i class="fas fa-check mr-1"></i>
+                                                Atendido
+                                            </span>
+                                        {% else %}
+                                            <span class="badge-warning-sm">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                Pendente
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        {% if request.script_file %}
+                                            <a href="{{ request.script_file.url }}" 
+                                               class="text-info-400 hover:text-info-300 text-sm font-medium transition-colors" 
+                                               download>
+                                                <i class="fas fa-download mr-1"></i>
+                                                Baixar
+                                            </a>
+                                        {% else %}
+                                            <span class="text-gray-500">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center justify-end space-x-2">
+                                            <a href="{% url 'contact_request_detail' request.id %}" 
+                                               class="w-8 h-8 bg-dark-600 hover:bg-warning-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-300 group">
+                                                <i class="fas fa-eye text-xs group-hover:scale-110 transition-transform"></i>
+                                            </a>
+                                            {% if not request.contacted %}
+                                            <a href="{% url 'mark_contacted' request.id %}?next={{ request.get_absolute_url }}" 
+                                               class="w-8 h-8 bg-dark-600 hover:bg-success-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-300 group">
+                                                <i class="fas fa-check text-xs group-hover:scale-110 transition-transform"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enhanced Pagination -->
+            {% if contact_requests.has_other_pages %}
+            <div class="flex flex-col sm:flex-row items-center justify-between mt-8 space-y-4 sm:space-y-0">
+                <div class="text-sm text-gray-400">
+                    Mostrando {{ contact_requests.start_index }}-{{ contact_requests.end_index }} de {{ contact_requests.paginator.count }} solicitações
+                </div>
+                
+                <nav class="flex items-center space-x-2">
+                    {% if contact_requests.has_previous %}
+                    <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="w-10 h-10 bg-dark-700/50 hover:bg-dark-600 text-gray-300 hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 border border-dark-600 hover:border-warning-500">
+                        <i class="fas fa-angle-double-left text-sm"></i>
+                    </a>
+                    <a href="?page={{ contact_requests.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="w-10 h-10 bg-dark-700/50 hover:bg-dark-600 text-gray-300 hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 border border-dark-600 hover:border-warning-500">
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for i in contact_requests.paginator.page_range %}
+                        {% if contact_requests.number == i %}
+                        <span class="w-10 h-10 bg-gradient-to-r from-warning-600 to-info-600 text-white rounded-xl flex items-center justify-center font-semibold shadow-lg">
+                            {{ i }}
+                        </span>
+                        {% elif i >= contact_requests.number|add:"-2" and i <= contact_requests.number|add:"2" %}
+                        <a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                           class="w-10 h-10 bg-dark-700/50 hover:bg-dark-600 text-gray-300 hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 border border-dark-600 hover:border-warning-500">
+                            {{ i }}
+                        </a>
+                        {% elif i == contact_requests.number|add:"-3" or i == contact_requests.number|add:"3" %}
+                        <span class="w-10 h-10 flex items-center justify-center text-gray-500">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if contact_requests.has_next %}
+                    <a href="?page={{ contact_requests.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="w-10 h-10 bg-dark-700/50 hover:bg-dark-600 text-gray-300 hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 border border-dark-600 hover:border-warning-500">
+                        <i class="fas fa-chevron-right text-sm"></i>
+                    </a>
+                    <a href="?page={{ contact_requests.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="w-10 h-10 bg-dark-700/50 hover:bg-dark-600 text-gray-300 hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 border border-dark-600 hover:border-warning-500">
+                        <i class="fas fa-angle-double-right text-sm"></i>
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        {% else %}
+            <!-- Enhanced Empty State -->
+            <div class="relative bg-dark-800/40 backdrop-blur-xl border border-dark-700/50 rounded-2xl shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-r from-warning-600/5 to-info-600/5 rounded-2xl"></div>
+                <div class="relative p-12 text-center">
+                    <div class="w-24 h-24 bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                        <i class="fas fa-envelope-open text-4xl text-warning-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Nenhuma solicitação encontrada</h3>
+                    <p class="text-gray-400 text-lg mb-6 max-w-md mx-auto">
+                        {% if request.GET.status or request.GET.service_type or request.GET.has_script or request.GET.search or request.GET.date_range %}
+                            Não encontramos solicitações que correspondam aos filtros selecionados.
+                        {% else %}
+                            Não há solicitações de contato no momento. Quando chegarem novas solicitações, elas aparecerão aqui.
+                        {% endif %}
+                    </p>
+                    
+                    {% if request.GET.status or request.GET.service_type or request.GET.has_script or request.GET.search or request.GET.date_range %}
+                    <a href="{% url 'contact_requests' %}" 
+                       class="inline-flex items-center bg-gradient-to-r from-warning-600 to-info-600 hover:from-warning-700 hover:to-info-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 space-x-2">
+                        <i class="fas fa-times text-sm"></i>
+                        <span>Limpar Filtros</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// View Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const gridViewBtn = document.getElementById('grid-view-btn');
+    const tableViewBtn = document.getElementById('table-view-btn');
+    const gridView = document.getElementById('grid-view');
+    const tableView = document.getElementById('table-view');
+    
+    if (gridViewBtn && tableViewBtn && gridView && tableView) {
+        gridViewBtn.addEventListener('click', function() {
+            gridView.classList.remove('hidden');
+            tableView.classList.add('hidden');
+            gridViewBtn.classList.add('bg-warning-600', 'text-white');
+            gridViewBtn.classList.remove('text-gray-400');
+            tableViewBtn.classList.remove('bg-warning-600', 'text-white');
+            tableViewBtn.classList.add('text-gray-400');
+        });
+        
+        tableViewBtn.addEventListener('click', function() {
+            tableView.classList.remove('hidden');
+            gridView.classList.add('hidden');
+            tableViewBtn.classList.add('bg-warning-600', 'text-white');
+            tableViewBtn.classList.remove('text-gray-400');
+            gridViewBtn.classList.remove('bg-warning-600', 'text-white');
+            gridViewBtn.classList.add('text-gray-400');
+        });
+    }
+    
+    // Search functionality
+    const searchForm = document.getElementById('filter-form');
+    if (searchForm) {
+        const searchInput = searchForm.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    if (this.value.length >= 3 || this.value.length === 0) {
+                        searchForm.submit();
+                    }
+                }, 500);
+            });
+        }
+    }
+    
+    // Sort functionality
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const url = new URL(window.location);
+            url.searchParams.set('sort', this.value);
+            window.location = url;
+        });
+    }
+});
+
+// Export functionality
+function exportData() {
+    const url = new URL(window.location);
+    url.searchParams.set('export', 'csv');
+    window.location = url;
+}
+
+// Auto-refresh functionality
+let autoRefreshInterval;
+function toggleAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+    } else {
+        autoRefreshInterval = setInterval(() => {
+            window.location.reload();
+        }, 30000); // Refresh every 30 seconds
+    }
+}
+</script>
+{% endblock %}

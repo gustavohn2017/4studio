@@ -1,0 +1,440 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Gerenciar Depoimentos - VoiceTel Admin{% endblock %}
+
+{% block header %}Gerenciar Depoimentos{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 p-6">
+    <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Hero Header -->
+        <div class="relative overflow-hidden bg-gradient-to-r from-accent-600/20 to-primary-600/20 rounded-3xl border border-dark-700/50 backdrop-blur-sm">
+            <div class="absolute inset-0 bg-pattern-dots opacity-30"></div>
+            <div class="relative p-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-6 lg:space-y-0">
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-accent-600 to-primary-600 rounded-2xl flex items-center justify-center shadow-xl">
+                                <i class="fas fa-comments text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                                    Gerenciar Depoimentos
+                                </h1>
+                                <p class="text-gray-400 text-lg">Controle os depoimentos exibidos no site</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700 rounded-xl px-4 py-3 flex items-center space-x-3">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white">{{ testimonials.count }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wide">Total</div>
+                            </div>
+                            <div class="w-px h-8 bg-dark-600"></div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-400">{{ active_count|default:0 }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wide">Ativos</div>
+                            </div>
+                        </div>
+                        <a href="{% url 'testimonial_create' %}" 
+                           class="group relative bg-gradient-to-r from-accent-600 to-primary-600 hover:from-accent-700 hover:to-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center space-x-2">
+                            <i class="fas fa-plus text-sm"></i>
+                            <span>Novo Depoimento</span>
+                            <div class="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        {% if testimonials %}
+        <!-- Filter & Search Bar -->
+        <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
+                <div class="flex items-center space-x-4 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-80">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchInput" 
+                               class="w-full pl-10 pr-4 py-3 bg-dark-700/50 border border-dark-600 text-gray-100 rounded-xl focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all duration-300"
+                               placeholder="Buscar depoimentos...">
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-list mr-2"></i>Todos
+                    </button>
+                    <button class="filter-btn" data-filter="active">
+                        <i class="fas fa-check-circle mr-2"></i>Ativos
+                    </button>
+                    <button class="filter-btn" data-filter="inactive">
+                        <i class="fas fa-pause-circle mr-2"></i>Inativos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="testimonialsGrid">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card group relative bg-dark-800/40 backdrop-blur-sm border border-dark-700/50 rounded-2xl overflow-hidden hover:border-accent-500/50 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-2xl"
+                 data-status="{% if testimonial.active %}active{% else %}inactive{% endif %}"
+                 data-name="{{ testimonial.client_name|lower }}"
+                 data-company="{{ testimonial.company|lower|default:'' }}">
+                
+                <!-- Card Header -->
+                <div class="relative p-6 pb-4">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-4">
+                            <!-- Avatar -->
+                            <div class="relative">
+                                {% if testimonial.image %}
+                                <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-dark-600 group-hover:border-accent-500/50 transition-colors duration-300">
+                                    <img src="{{ testimonial.image.url }}" 
+                                         alt="{{ testimonial.client_name }}" 
+                                         class="w-full h-full object-cover">
+                                </div>
+                                {% else %}
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-dark-700 to-dark-600 border-2 border-dark-600 group-hover:border-accent-500/50 flex items-center justify-center transition-colors duration-300">
+                                    <i class="fas fa-user text-2xl text-gray-400"></i>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Status Indicator -->
+                                <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full border-2 border-dark-800 {% if testimonial.active %}bg-green-500{% else %}bg-gray-500{% endif %} flex items-center justify-center">
+                                    <i class="fas {% if testimonial.active %}fa-check{% else %}fa-pause{% endif %} text-white text-xs"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Client Info -->
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-white text-lg group-hover:text-accent-300 transition-colors duration-300 truncate">
+                                    {{ testimonial.client_name }}
+                                </h3>
+                                {% if testimonial.company %}
+                                <p class="text-gray-400 text-sm mt-1 truncate">{{ testimonial.company }}</p>
+                                {% endif %}
+                                <div class="flex items-center mt-2 space-x-2">
+                                    {% if testimonial.active %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse"></div>
+                                        Publicado
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-gray-500/20 text-gray-400 border border-gray-500/30">
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full mr-1"></div>
+                                        Rascunho
+                                    </span>
+                                    {% endif %}
+                                    <span class="text-xs text-gray-500">{{ testimonial.created_at|date:"d/m/Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quote Section -->
+                <div class="px-6 pb-6">
+                    <div class="relative">
+                        <div class="absolute -top-2 -left-2 text-4xl text-accent-500/30">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <blockquote class="relative pl-6 text-gray-300 text-sm leading-relaxed italic">
+                            {{ testimonial.quote|truncatechars:120 }}
+                        </blockquote>
+                        <div class="absolute -bottom-2 -right-2 text-4xl text-accent-500/30 rotate-180">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="absolute bottom-0 left-0 right-0 bg-dark-900/80 backdrop-blur-sm p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="text-xs text-gray-400">
+                                <i class="far fa-clock mr-1"></i>
+                                {{ testimonial.created_at|timesince }} atrás
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <a href="{% url 'testimonial_edit' testimonial.id %}" 
+                               class="w-8 h-8 bg-accent-600/80 hover:bg-accent-600 rounded-lg flex items-center justify-center text-white transition-colors duration-200 group/btn">
+                                <i class="fas fa-edit text-sm group-hover/btn:scale-110 transition-transform duration-200"></i>
+                            </a>
+                            <a href="{% url 'testimonial_delete' testimonial.id %}" 
+                               class="w-8 h-8 bg-red-600/80 hover:bg-red-600 rounded-lg flex items-center justify-center text-white transition-colors duration-200 group/btn"
+                               onclick="return confirm('Tem certeza que deseja excluir este depoimento?')">
+                                <i class="fas fa-trash-alt text-sm group-hover/btn:scale-110 transition-transform duration-200"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hover Glow Effect -->
+                <div class="absolute inset-0 bg-gradient-to-r from-accent-600/5 to-primary-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-20">
+            <div class="relative inline-block">
+                <div class="w-32 h-32 bg-gradient-to-br from-dark-700 to-dark-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                    <i class="fas fa-comments text-5xl text-gray-400"></i>
+                </div>
+                <div class="absolute -top-4 -right-4 w-8 h-8 bg-accent-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-plus text-white text-sm"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-4">Nenhum depoimento encontrado</h3>
+            <p class="text-gray-400 text-lg mb-8 max-w-md mx-auto">
+                Comece criando o primeiro depoimento para mostrar a satisfação dos seus clientes
+            </p>
+            <a href="{% url 'testimonial_create' %}" 
+               class="inline-flex items-center bg-gradient-to-r from-accent-600 to-primary-600 hover:from-accent-700 hover:to-primary-700 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 space-x-3">
+                <i class="fas fa-plus"></i>
+                <span>Criar Primeiro Depoimento</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Filter Button Styles */
+.filter-btn {
+    @apply px-4 py-2 bg-dark-700/50 hover:bg-dark-600 border border-dark-600 hover:border-dark-500 
+           text-gray-400 hover:text-white rounded-lg transition-all duration-200 text-sm font-medium
+           flex items-center;
+}
+
+.filter-btn.active {
+    @apply bg-accent-600 border-accent-600 text-white;
+}
+
+/* Testimonial Card Animations */
+.testimonial-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.testimonial-card:nth-child(2) { animation-delay: 0.1s; }
+.testimonial-card:nth-child(3) { animation-delay: 0.2s; }
+.testimonial-card:nth-child(4) { animation-delay: 0.3s; }
+.testimonial-card:nth-child(5) { animation-delay: 0.4s; }
+.testimonial-card:nth-child(6) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Search & Filter Effects */
+.testimonial-card.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
+}
+
+.testimonial-card.visible {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+    
+    let currentFilter = 'all';
+    
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        filterTestimonials(searchTerm, currentFilter);
+    });
+    
+    // Filter functionality
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            currentFilter = this.dataset.filter;
+            const searchTerm = searchInput.value.toLowerCase();
+            filterTestimonials(searchTerm, currentFilter);
+        });
+    });
+    
+    function filterTestimonials(searchTerm, filter) {
+        testimonialCards.forEach(card => {
+            const name = card.dataset.name;
+            const company = card.dataset.company;
+            const status = card.dataset.status;
+            
+            const matchesSearch = name.includes(searchTerm) || company.includes(searchTerm);
+            const matchesFilter = filter === 'all' || status === filter;
+            
+            if (matchesSearch && matchesFilter) {
+                card.classList.remove('hidden');
+                card.classList.add('visible');
+                card.style.display = 'block';
+            } else {
+                card.classList.add('hidden');
+                card.classList.remove('visible');
+                setTimeout(() => {
+                    if (card.classList.contains('hidden')) {
+                        card.style.display = 'none';
+                    }
+                }, 300);
+            }
+        });
+        
+        // Show/hide no results message
+        const visibleCards = document.querySelectorAll('.testimonial-card.visible').length;
+        if (visibleCards === 0 && testimonialCards.length > 0) {
+            showNoResults();
+        } else {
+            hideNoResults();
+        }
+    }
+    
+    function showNoResults() {
+        let noResults = document.getElementById('noResults');
+        if (!noResults) {
+            noResults = document.createElement('div');
+            noResults.id = 'noResults';
+            noResults.className = 'col-span-full text-center py-12';
+            noResults.innerHTML = `
+                <div class="w-24 h-24 bg-dark-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-search text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Nenhum resultado encontrado</h3>
+                <p class="text-gray-400">Tente ajustar os filtros ou termo de busca</p>
+            `;
+            document.getElementById('testimonialsGrid').appendChild(noResults);
+        }
+        noResults.style.display = 'block';
+    }
+    
+    function hideNoResults() {
+        const noResults = document.getElementById('noResults');
+        if (noResults) {
+            noResults.style.display = 'none';
+        }
+    }
+    
+    // Add smooth scroll to top when filtering
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            setTimeout(() => {
+                window.scrollTo({
+                    top: document.getElementById('testimonialsGrid').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        });
+    });
+});
+</script>
+
+<script>
+// Enhanced Testimonials Manager JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchForm = document.getElementById('filter-form');
+    if (searchForm) {
+        const searchInput = searchForm.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    if (this.value.length >= 3 || this.value.length === 0) {
+                        searchForm.submit();
+                    }
+                }, 500);
+            });
+        }
+    }
+    
+    // Status filter change
+    const statusFilter = document.getElementById('status');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            searchForm.submit();
+        });
+    }
+    
+    // Delete confirmation with enhanced styling
+    const deleteButtons = document.querySelectorAll('a[onclick*="confirm"]');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const confirmed = confirm('Tem certeza que deseja excluir este depoimento? Esta ação não pode ser desfeita.');
+            if (confirmed) {
+                window.location.href = this.href;
+            }
+        });
+    });
+});
+</script>
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Testimonial card hover effects */
+    .testimonial-card {
+        transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-4px);
+    }
+    
+    /* Rating stars animation */
+    .rating-star {
+        transition: all 0.2s ease;
+    }
+    
+    .rating-star:hover {
+        transform: scale(1.1);
+    }
+    
+    /* Gradient animation */
+    @keyframes gradient-shift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    
+    .bg-pattern-dots {
+        background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+</style>
+{% endblock %}

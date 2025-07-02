@@ -1,0 +1,63 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Erro de Segurança - VoiceTel Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-8">
+    <div class="glass-card border-red-500/20">
+        <div class="glass-card-header bg-gradient-to-r from-red-600/20 to-red-500/20">
+            <h4 class="flex items-center text-lg font-semibold text-red-400">
+                <i class="fas fa-exclamation-triangle mr-2"></i> 
+                Erro de Segurança
+            </h4>
+        </div>
+        <div class="glass-card-content">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-500/20 border border-red-500/30 mb-4">
+                    <i class="fas fa-shield-alt text-red-400 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Falha na Verificação de Segurança</h3>
+                <p class="text-gray-300">
+                    {{ error_message }}
+                </p>
+            </div>
+            
+            <div class="alert alert-warning mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-yellow-400 mr-3 mt-0.5"></i>
+                    <div>
+                        <p class="font-medium text-yellow-300 mb-2">Possíveis causas:</p>
+                        <ul class="text-sm text-gray-300 space-y-1">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-yellow-400 mr-2 mt-1 text-xs"></i>
+                                Sua sessão pode ter expirado
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-yellow-400 mr-2 mt-1 text-xs"></i>
+                                Você pode ter enviado o formulário a partir de outra janela
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-yellow-400 mr-2 mt-1 text-xs"></i>
+                                Problemas com cookies ou cache do navegador
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-yellow-400 mr-2 mt-1 text-xs"></i>
+                                Tentativa de CSRF (Cross-Site Request Forgery)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-3">
+                <a href="{% url 'admin_dashboard' %}" class="btn-primary">
+                    <i class="fas fa-home mr-2"></i> Voltar para o Dashboard
+                </a>
+                <a href="{% url 'logout' %}" class="btn-secondary">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Fazer Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

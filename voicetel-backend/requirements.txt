@@ -1,0 +1,45 @@
+# Django e componentes principais
+Django==5.2.3
+djangorestframework==3.16.0
+django-cors-headers==4.7.0
+
+# Banco de dados e armazenamento
+psycopg2-binary==2.9.10  # PostgreSQL driver
+dj-database-url==2.1.0   # Database URL configuration
+
+# Processamento de imagens e mídia
+Pillow==11.2.1  # Processamento de imagens
+
+# Segurança
+argon2-cffi==23.1.0      # Algoritmo de hashing Argon2
+bcrypt==4.1.2            # Algoritmo de hashing BCrypt
+django-axes==6.3.0       # Proteção contra tentativas de login
+django-otp==1.3.0        # Autenticação de dois fatores (opcional)
+
+# API e REST
+drf-yasg==1.21.7         # Documentação Swagger para APIs
+django-filter==24.1      # Filtragem avançada para APIs
+
+# Utilitários
+python-decouple==3.8     # Gerenciamento de configurações
+whitenoise==6.6.0        # Servir arquivos estáticos
+
+# Cache
+redis==5.0.2             # Redis para cache e celery (opcional)
+django-redis==5.4.0      # Cache Redis para Django
+
+# Desenvolvimento e testes
+pytest==8.0.0            # Testes unitários
+pytest-django==4.7.0     # Integração Pytest com Django
+coverage==7.4.1          # Medição de cobertura de código
+django-debug-toolbar==4.2.0  # Depuração em desenvolvimento
+
+# Produção
+gunicorn==21.2.0         # Servidor WSGI para produção
+sentry-sdk==1.41.0       # Monitoramento e rastreamento de erros (opcional)
+
+# Ambiente e qualidade de código
+python-dotenv==1.0.0     # Carregamento de variáveis de ambiente
+black==24.2.0            # Formatação de código
+flake8==7.0.0            # Linting de código
+isort==5.13.2            # Ordenação de imports

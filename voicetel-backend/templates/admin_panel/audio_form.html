@@ -1,0 +1,280 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}{% if audio %}Editar Áudio{% else %}Adicionar Áudio{% endif %} - VoiceTel Admin{% endblock %}
+
+{% block header %}{% if audio %}Editar Áudio{% else %}Adicionar Áudio{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white mb-2">
+                    <i class="fas fa-music mr-3 text-accent-400"></i>
+                    {% if audio %}Editar Áudio{% else %}Adicionar Áudio{% endif %}
+                </h1>
+                <p class="text-gray-400">
+                    {% if audio %}
+                        Atualize as informações do áudio
+                    {% else %}
+                        Adicione um novo áudio à sua biblioteca
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'audio_manager' %}" class="btn-secondary-modern">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Voltar
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card-modern">
+        <form method="post" enctype="multipart/form-data" x-data="audioForm()" @submit="handleSubmit">
+            {% csrf_token %}
+            
+            <div class="p-8 space-y-8">
+                <!-- File Upload Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-lg font-semibold text-white">
+                            Arquivo de Áudio
+                            {% if not audio %}
+                                <span class="text-red-400 ml-1">*</span>
+                            {% endif %}
+                        </label>
+                        {% if audio %}
+                            <span class="text-sm text-gray-400">Deixe em branco para manter o arquivo atual</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="relative">
+                        <input type="file" 
+                               name="audio_file" 
+                               id="audioFile" 
+                               accept="audio/*" 
+                               class="hidden"
+                               {% if not audio %}required{% endif %}
+                               @change="handleFileSelect($event)">
+                        
+                        <div class="border-2 border-dashed border-dark-600 rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer hover:border-accent-500 hover:bg-accent-500/5"
+                             @click="$refs.fileInput.click()"
+                             @dragover.prevent="dragOver = true"
+                             @dragleave.prevent="dragOver = false"
+                             @drop.prevent="handleFileDrop($event)"
+                             :class="{ 'border-accent-500 bg-accent-500/10': dragOver }"
+                             x-ref="dropZone">
+                            
+                            <div class="space-y-4">
+                                <div class="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center mx-auto">
+                                    <i class="fas fa-cloud-upload-alt text-2xl text-accent-400"></i>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-white font-medium mb-2">Arraste e solte seu arquivo aqui</h3>
+                                    <p class="text-gray-400 mb-4">ou clique para selecionar</p>
+                                    <button type="button" 
+                                            class="btn-primary-modern"
+                                            @click.stop="$refs.fileInput.click()">
+                                        Escolher Arquivo
+                                    </button>
+                                </div>
+                                
+                                <div class="text-sm text-gray-500" x-show="!selectedFile">
+                                    <p>Formatos suportados: MP3, WAV, OGG</p>
+                                    <p>Tamanho máximo: 10MB</p>
+                                </div>
+                                
+                                <div x-show="selectedFile" class="bg-dark-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-music text-accent-400 mr-3"></i>
+                                            <span class="text-white font-medium" x-text="selectedFile?.name"></span>
+                                        </div>
+                                        <button type="button" 
+                                                @click="clearFile()"
+                                                class="text-gray-400 hover:text-red-400 transition-colors">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <input type="file" x-ref="fileInput" class="hidden" @change="handleFileSelect($event)">
+                    </div>
+                </div>
+
+                <!-- Form Fields -->
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Title -->
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-300 mb-2">
+                            Título <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" 
+                               id="title" 
+                               name="title" 
+                               value="{{ audio.title|default:'' }}" 
+                               required
+                               class="input-modern w-full"
+                               placeholder="Digite o título do áudio">
+                    </div>
+
+                    <!-- Category and Voice Type -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-300 mb-2">
+                                Categoria <span class="text-red-400">*</span>
+                            </label>
+                            <select id="category" name="category" required class="input-modern w-full">
+                                <option value="" disabled {% if not audio %}selected{% endif %}>Selecione uma categoria</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if audio and audio.category.id == category.id %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="voice_type" class="block text-sm font-medium text-gray-300 mb-2">
+                                Tipo de Voz <span class="text-red-400">*</span>
+                            </label>
+                            <select id="voice_type" name="voice_type" required class="input-modern w-full">
+                                <option value="" disabled {% if not audio %}selected{% endif %}>Selecione um tipo</option>
+                                {% for voice_type in voice_types %}
+                                    <option value="{{ voice_type.id }}" {% if audio and audio.voice_type.id == voice_type.id %}selected{% endif %}>
+                                        {{ voice_type.name }} ({{ voice_type.get_gender_display }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
+                            Descrição
+                        </label>
+                        <textarea id="description" 
+                                  name="description" 
+                                  rows="4" 
+                                  class="input-modern w-full resize-none"
+                                  placeholder="Digite uma breve descrição do áudio...">{{ audio.description|default:'' }}</textarea>
+                    </div>
+
+                    <!-- Featured Checkbox -->
+                    <div class="flex items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" 
+                                   id="featured" 
+                                   name="featured" 
+                                   {% if audio and audio.featured %}checked{% endif %}
+                                   class="w-4 h-4 text-accent-600 bg-dark-800 border-dark-600 rounded focus:ring-accent-500 focus:ring-2">
+                            <label for="featured" class="ml-2 text-sm text-gray-300">
+                                Destacar este áudio
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Preview -->
+                <div x-show="previewUrl || {{ audio|yesno:'true,false' }}" 
+                     class="bg-dark-700/50 rounded-xl p-6 border border-dark-600">
+                    <h3 class="text-lg font-semibold text-white mb-4">Pré-visualização</h3>
+                    <audio controls class="w-full h-12 rounded-lg bg-dark-800">
+                        {% if audio %}
+                            <source src="{{ audio.audio_file.url }}" type="audio/mpeg">
+                        {% endif %}
+                        <source x-bind:src="previewUrl" type="audio/mpeg">
+                        Seu navegador não suporta o elemento de áudio.
+                    </audio>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="border-t border-dark-700 px-8 py-6">
+                <div class="flex items-center justify-between">
+                    <a href="{% url 'audio_manager' %}" class="btn-secondary-modern">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancelar
+                    </a>
+                    
+                    <button type="submit" 
+                            class="btn-primary-modern"
+                            :disabled="loading"
+                            :class="{ 'opacity-50 cursor-not-allowed': loading }">
+                        <span x-show="!loading" class="flex items-center">
+                            <i class="fas fa-save mr-2"></i>
+                            {% if audio %}Atualizar{% else %}Salvar{% endif %} Áudio
+                        </span>
+                        <span x-show="loading" class="flex items-center">
+                            <div class="loading-spinner mr-2"></div>
+                            Salvando...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function audioForm() {
+        return {
+            selectedFile: null,
+            previewUrl: null,
+            dragOver: false,
+            loading: false,
+            
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
+            },
+            
+            handleFileDrop(event) {
+                this.dragOver = false;
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processFile(files[0]);
+                    // Update the actual file input
+                    document.getElementById('audioFile').files = files;
+                }
+            },
+            
+            processFile(file) {
+                if (!file.type.startsWith('audio/')) {
+                    alert('Por favor, selecione um arquivo de áudio válido.');
+                    return;
+                }
+                
+                this.selectedFile = file;
+                this.previewUrl = URL.createObjectURL(file);
+                
+                // Auto-generate title from filename if title is empty
+                const titleInput = document.getElementById('title');
+                if (!titleInput.value) {
+                    let autoTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
+                    autoTitle = autoTitle.replace(/\b\w/g, l => l.toUpperCase());
+                    titleInput.value = autoTitle;
+                }
+            },
+            
+            clearFile() {
+                this.selectedFile = null;
+                this.previewUrl = null;
+                document.getElementById('audioFile').value = '';
+            },
+            
+            handleSubmit(event) {
+                this.loading = true;
+                // Form will submit normally, loading state will reset on page change
+            }
+        }
+    }
+</script>
+{% endblock %}

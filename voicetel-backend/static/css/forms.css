@@ -1,0 +1,208 @@
+/* =================================================================
+   VoiceTel Admin Panel - Form Styles
+   ================================================================= */
+
+/* Form Labels */
+label:not(.form-check-label) {
+    @apply block text-sm font-medium text-gray-300 mb-2;
+}
+
+/* Input Fields */
+.input-modern {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-xl px-4 py-3 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all duration-300;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not(.hidden) {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-lg px-4 py-2 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all duration-300;
+}
+
+/* Specific Input Types */
+input[type="search"] {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-lg px-4 py-2 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20;
+}
+
+input[type="date"], 
+input[type="time"], 
+input[type="datetime-local"] {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-lg px-4 py-2 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20;
+}
+
+input[type="number"] {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-lg px-4 py-2 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20;
+}
+
+input[type="color"] {
+    @apply w-12 h-10 border border-dark-600 rounded-lg cursor-pointer;
+}
+
+/* File Inputs */
+input[type="file"] {
+    @apply text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-600 file:text-white hover:file:bg-accent-700;
+}
+
+/* Range/Slider Inputs */
+input[type="range"] {
+    @apply w-full h-2 bg-dark-700 rounded-lg appearance-none cursor-pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 bg-accent-500 rounded-full cursor-pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    @apply w-5 h-5 bg-accent-500 rounded-full cursor-pointer border-0;
+}
+
+/* Select Elements */
+select {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-lg px-4 py-2 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all duration-300;
+}
+
+/* Textarea */
+textarea {
+    @apply bg-dark-800 border border-dark-600 text-gray-100 rounded-lg px-4 py-2 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition-all duration-300 resize-none;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+    @apply w-4 h-4 text-accent-600 bg-dark-800 border-dark-600 rounded focus:ring-accent-500 focus:ring-2;
+}
+
+.checkbox-group {
+    @apply space-y-3;
+}
+
+.checkbox-item {
+    @apply flex items-center p-3 bg-dark-800 border border-dark-600 rounded-lg hover:bg-dark-700 transition-colors cursor-pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+    @apply mr-3;
+}
+
+.checkbox-item label {
+    @apply cursor-pointer mb-0 flex-1;
+}
+
+/* Radio Buttons */
+input[type="radio"] {
+    @apply w-4 h-4 text-accent-600 bg-dark-800 border-dark-600 focus:ring-accent-500 focus:ring-2;
+}
+
+.radio-group {
+    @apply space-y-3;
+}
+
+.radio-item {
+    @apply flex items-center p-3 bg-dark-800 border border-dark-600 rounded-lg hover:bg-dark-700 transition-colors cursor-pointer;
+}
+
+.radio-item input[type="radio"] {
+    @apply mr-3;
+}
+
+.radio-item label {
+    @apply cursor-pointer mb-0 flex-1;
+}
+
+/* Form Check Elements */
+.form-check {
+    @apply flex items-center mb-3;
+}
+
+.form-check-input {
+    @apply w-4 h-4 text-accent-600 bg-dark-800 border-dark-600 rounded focus:ring-accent-500 focus:ring-2 mr-2;
+}
+
+.form-check-label {
+    @apply text-gray-300 cursor-pointer mb-0;
+}
+
+/* Form Groups */
+.form-group-inline {
+    @apply flex items-center space-x-4;
+}
+
+.form-group-stacked {
+    @apply space-y-2;
+}
+
+.form-row {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4 mb-4;
+}
+
+/* Form Validation */
+.form-control.is-invalid, 
+.form-input.is-invalid {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500/20;
+}
+
+.form-control.is-valid, 
+.form-input.is-valid {
+    @apply border-green-500 focus:border-green-500 focus:ring-green-500/20;
+}
+
+.invalid-feedback {
+    @apply text-red-400 text-sm mt-1;
+}
+
+.valid-feedback {
+    @apply text-green-400 text-sm mt-1;
+}
+
+/* Django Error Lists */
+.errorlist {
+    @apply list-none text-red-400 text-sm space-y-1 mb-2 p-0;
+}
+
+.errorlist li {
+    @apply text-red-400;
+}
+
+/* Help Text */
+.form-text, 
+.help-text {
+    @apply text-gray-400 text-sm mt-1;
+}
+
+/* Required Field Indicator */
+.required {
+    @apply text-red-400;
+}
+
+/* Enhanced Focus States */
+.focus-ring:focus {
+    @apply ring-4 ring-accent-500/30 ring-offset-2 ring-offset-dark-900;
+}
+
+input:focus, 
+select:focus, 
+textarea:focus, 
+button:focus {
+    @apply ring-2 ring-accent-500/20;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    border-color: #a855f7;
+}
+
+/* Fieldsets and Legends */
+fieldset {
+    @apply border border-dark-600 rounded-lg p-4 mb-4;
+}
+
+legend {
+    @apply text-white font-semibold px-2;
+}
+
+/* File Upload Areas */
+.file-upload-area {
+    @apply border-2 border-dashed border-dark-600 rounded-xl p-8 text-center transition-all duration-300 cursor-pointer hover:border-accent-500/50;
+}
+
+.drag-over {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(14, 165, 233, 0.1) 100%);
+    border-color: #a855f7;
+    transform: scale(1.02);
+}

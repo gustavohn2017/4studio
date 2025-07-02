@@ -1,0 +1,220 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Detalhes da Solicitação - VoiceTel Admin{% endblock %}
+
+{% block header %}Detalhes da Solicitação{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 p-6">
+    <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-2 text-sm">
+            <a href="{% url 'admin_dashboard' %}" class="text-gray-400 hover:text-warning-400 transition-colors font-medium">
+                <i class="fas fa-home mr-1"></i>
+                Dashboard
+            </a>
+            <i class="fas fa-chevron-right text-xs text-gray-600"></i>
+            <a href="{% url 'contact_requests' %}" class="text-gray-400 hover:text-warning-400 transition-colors font-medium">
+                <i class="fas fa-envelope mr-1"></i>
+                Solicitações
+            </a>
+            <i class="fas fa-chevron-right text-xs text-gray-600"></i>
+            <span class="text-white font-semibold">{{ contact_request.name }}</span>
+        </nav>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Information -->
+            <div class="lg:col-span-2">
+                <div class="relative bg-dark-800/40 backdrop-blur-xl border border-dark-700/50 rounded-2xl shadow-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-r from-warning-600/5 to-info-600/5 rounded-2xl"></div>
+                    <div class="relative">
+                        <div class="p-6 border-b border-dark-700/50">
+                            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gradient-to-r from-warning-600/20 to-info-600/20 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-envelope text-warning-400"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-xl font-semibold text-white">Informações da Solicitação</h2>
+                                        <p class="text-sm text-gray-400">Dados completos do cliente</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    {% if contact_request.contacted %}
+                                    <span class="badge-success-sm">
+                                        <i class="fas fa-check mr-1"></i>
+                                        Atendido
+                                    </span>
+                                    <a href="{% url 'mark_contacted' contact_request.id %}?next={{ request.path }}" 
+                                       class="bg-dark-700 hover:bg-dark-600 text-gray-300 hover:text-white font-semibold px-4 py-2 rounded-xl transition-all duration-300 border border-dark-600 hover:border-warning-500 text-sm flex items-center space-x-2">
+                                        <i class="fas fa-undo text-sm"></i>
+                                        <span>Marcar Pendente</span>
+                                    </a>
+                                    {% else %}
+                                    <span class="badge-warning-sm">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        Pendente
+                                    </span>
+                                    <a href="{% url 'mark_contacted' contact_request.id %}?next={{ request.path }}" 
+                                       class="bg-gradient-to-r from-success-600 to-success-700 hover:from-success-700 hover:to-success-800 text-white font-semibold px-4 py-2 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 text-sm flex items-center space-x-2">
+                                        <i class="fas fa-check text-sm"></i>
+                                        <span>Marcar Atendido</span>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Nome</label>
+                            <p class="text-white font-medium">{{ contact_request.name }}</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Empresa</label>
+                            <p class="text-gray-300">{{ contact_request.company|default:"Não informado" }}</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">E-mail</label>
+                            <p>
+                                <a href="mailto:{{ contact_request.email }}" 
+                                   class="text-accent-400 hover:text-accent-300 transition-colors">
+                                    {{ contact_request.email }}
+                                </a>
+                            </p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Telefone</label>
+                            <p>
+                                <a href="tel:{{ contact_request.phone }}" 
+                                   class="text-accent-400 hover:text-accent-300 transition-colors">
+                                    {{ contact_request.phone }}
+                                </a>
+                            </p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Data da Solicitação</label>
+                            <p class="text-gray-300">{{ contact_request.created_at|date:"d/m/Y H:i" }}</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Serviço</label>
+                            <p>
+                                {% if contact_request.service_type %}
+                                <span class="badge-modern badge-info">{{ contact_request.service_type.name }}</span>
+                                {% else %}
+                                <span class="text-gray-400">Não especificado</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-6">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Mensagem</label>
+                        <div class="bg-dark-700/50 p-4 rounded-xl border border-dark-600">
+                            <p class="text-gray-300 whitespace-pre-line">{{ contact_request.message }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 pt-6 border-t border-dark-700">
+                        <a href="{% url 'contact_requests' %}" class="btn-secondary-modern">
+                            <i class="fas fa-arrow-left mr-2"></i> Voltar
+                        </a>
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                            <a href="mailto:{{ contact_request.email }}" class="btn-primary-modern">
+                                <i class="fas fa-envelope mr-2"></i> Enviar E-mail
+                            </a>
+                            <a href="tel:{{ contact_request.phone }}" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-phone mr-2"></i> Ligar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Script File -->
+            <div class="card-modern">
+                <div class="p-6 border-b border-dark-700">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-file-alt mr-2 text-accent-400"></i> 
+                        Arquivo de Script
+                    </h2>
+                </div>
+                <div class="p-6">
+                    {% if contact_request.script_file %}
+                    <div class="bg-dark-700/50 p-4 rounded-xl border border-dark-600 mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-alt text-accent-400 mr-2"></i>
+                                <span class="text-white font-medium truncate">
+                                    {{ contact_request.script_file.name|cut:"uploads/scripts/"|truncatechars:25 }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="{{ contact_request.script_file.url }}" 
+                               class="btn-secondary-modern text-sm flex-1 text-center" 
+                               target="_blank">
+                                <i class="fas fa-eye mr-1"></i> Ver
+                            </a>
+                            <a href="{{ contact_request.script_file.url }}" 
+                               class="btn-primary-modern text-sm flex-1 text-center" 
+                               download>
+                                <i class="fas fa-download mr-1"></i> Baixar
+                            </a>
+                        </div>
+                    </div>
+                    
+                    {% if contact_request.script_file.name|lower|endswith:".pdf" %}
+                    <div>
+                        <h6 class="block text-sm font-medium text-gray-300 mb-2">Pré-visualização</h6>
+                        <iframe 
+                            src="{{ contact_request.script_file.url }}" 
+                            class="w-full h-64 border border-dark-600 rounded-lg"
+                            title="PDF preview">
+                        </iframe>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-file-alt text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-400">Nenhum arquivo de script anexado a esta solicitação.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Notes -->
+            <div class="card-modern">
+                <div class="p-6 border-b border-dark-700">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-sticky-note mr-2 text-accent-400"></i> 
+                        Anotações
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <form method="post" action="#" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea class="input-modern w-full" 
+                                      rows="5" 
+                                      placeholder="Adicione anotações sobre este contato..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary-modern w-full">
+                            <i class="fas fa-save mr-2"></i> Salvar Anotações
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

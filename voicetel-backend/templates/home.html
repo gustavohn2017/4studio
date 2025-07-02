@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceTel API - Backend</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            color: #2563eb;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .endpoints {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .endpoints li {
+            margin-bottom: 10px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #e5e7eb;
+            border-radius: 15px;
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>VoiceTel API</h1>
+        <p>Backend para o sistema de gestão de locuções e URA da VoiceTel</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Bem-vindo ao Backend da VoiceTel</h2>
+            <p>
+                Esta é a API do sistema VoiceTel, que fornece endpoints para gerenciar
+                amostras de áudio, categorias de voz, testemunhos e solicitações de contato.
+            </p>
+            <p>
+                <strong>Versão:</strong> {{ api_version }}
+            </p>
+            <p>
+                <a href="{{ frontend_url }}" class="btn">Acessar o Site</a>
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Endpoints Disponíveis</h2>
+            <ul class="endpoints">
+                <li>
+                    <a href="/api/" class="btn">API</a>
+                    <span class="tag">REST</span>
+                    Acesse todos os endpoints da API
+                </li>
+                <li>
+                    <a href="/admin/" class="btn">Admin Django</a>
+                    <span class="tag">Admin</span>
+                    Painel de administração padrão do Django
+                </li>
+                <li>
+                    <a href="/admin-panel/" class="btn">Painel Administrativo</a>
+                    <span class="tag">Custom</span>
+                    Painel administrativo personalizado
+                </li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>Documentação</h2>
+            <p>
+                Para mais informações sobre como usar a API, consulte a documentação ou
+                entre em contato com o time de desenvolvimento.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 VoiceTel. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
