@@ -14,7 +14,7 @@ function getApiBaseUrl() {
   // If on GitHub Pages, we might need to use a production API
   if (isGithubPages) {
     // Replace with your actual production API endpoint when available
-    return 'https://api.voicetel.example.com/api';
+    return 'https://api.4studio.example.com/api';
   }
   
   // Default to local development

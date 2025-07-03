@@ -14,23 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Voicetel - Locuções de alta qualidade para URA e espera telefônica",
+  title: "4Studio - Locuções de alta qualidade para URA e espera telefônica",
   description: "Serviços profissionais de locução para URA, espera telefônica e locuções com voz IA. Qualidade, agilidade e personalização.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: "cover",
-  },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#4338ca" },
-    { media: "(prefers-color-scheme: dark)", color: "#312e81" }
-  ],
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Voicetel",
+    title: "4Studio",
   },
   formatDetection: {
     telephone: true,
