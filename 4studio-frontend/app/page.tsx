@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import HeroSection from '@/components/sections/HeroSection';
-// import UraExplanationSection from '@/components/sections/UraExplanationSection';
 import ServicesSection from '@/components/sections/ServicesSection';
 import BenefitsSection from '@/components/sections/BenefitsSection';
 import AudioSamplesSection from '@/components/sections/AudioSamplesSection';
@@ -28,7 +27,7 @@ export default function Home() {
       {isAdmin && (
         <div className="fixed top-24 right-6 z-50 flex flex-col space-y-4">
           <a 
-            href="http://localhost:8000/admin/" 
+            href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}/admin/` || "http://localhost:8000/admin/"} 
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center space-x-2 bg-amber-500 hover:bg-amber-600 text-indigo-900 font-bold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105"
@@ -39,7 +38,7 @@ export default function Home() {
             </svg>
           </a>
           <a 
-            href="http://localhost:8000/api/" 
+            href={process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/"} 
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105"
@@ -51,8 +50,8 @@ export default function Home() {
           </a>
         </div>
       )}
+
       <HeroSection />
-      {/* <UraExplanationSection /> */}
       <ServicesSection />
       <BenefitsSection />
       <AudioSamplesSection />
