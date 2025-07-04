@@ -18,7 +18,7 @@ export default function HeroSection() {
         const randomHeight = Math.random() * 100 + 20;
         wave.setAttribute('height', randomHeight.toString());
       });
-    }, 200);
+    }, 150);
     
     return () => clearInterval(interval);
   }, []);
@@ -37,138 +37,120 @@ export default function HeroSection() {
           <div className="text-left lg:col-span-7 space-y-8 animate-fade-in-up">
             
             {/* Badge */}
-            <div className="inline-flex items-center space-x-2 bg-purple-500/10 text-purple-400 rounded-full px-6 py-3 border border-purple-500/20 animate-fade-in-scale">
-              <Mic className="w-5 h-5" />
-              <span className="text-sm font-semibold">Estúdio de Locução Profissional</span>
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border border-purple-500/30 rounded-full pl-1.5 pr-4 py-1.5 animate-fade-in-scale">
+              <div className="flex space-x-1 items-center bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full p-1.5">
+                <Volume2 className="w-3.5 h-3.5 text-emerald-950" />
+              </div>
+              <span className="text-sm font-medium text-emerald-400">Disponível 24/7</span>
             </div>
-            
-            <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-white leading-tight">
-              Transforme sua{' '}
-              <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 bg-clip-text text-transparent">
-                Comunicação
-              </span>
-              <br />
-              com Locuções{' '}
-              <span className="bg-gradient-to-r from-pink-400 via-purple-500 to-pink-400 bg-clip-text text-transparent">
-                Profissionais
-              </span>
+
+            {/* Main Heading */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+              Dê <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Voz</span> à 
+              <br className="hidden sm:block" /> 
+              Sua <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Marca</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl">
-              Conecte-se com seu público através de vozes autênticas e profissionais. 
-              Especializados em URA, espera telefônica e conteúdo empresarial de alta qualidade.
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-xl">
+              Locuções profissionais que transformam a experiência do cliente em sua 
+              <span className="text-purple-400"> URA, espera telefônica </span> 
+              e canais de comunicação.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in-left">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-left">
               <Link 
                 href="#contact" 
-                className="group bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 inline-flex items-center justify-center space-x-3"
+                className="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-br from-purple-600 to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
               >
                 <span>Solicitar Orçamento</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
               
               <Link 
-                href="#amostras" 
-                className="group bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 border border-white/20 hover:border-white/40 inline-flex items-center justify-center space-x-3"
+                href="/amostras"
+                className="inline-flex items-center justify-center px-8 py-4 border border-purple-500/50 text-purple-400 hover:bg-gradient-to-br hover:from-purple-600/10 hover:to-indigo-600/10 hover:border-purple-500 font-semibold rounded-xl transition-all duration-300"
               >
-                <PlayCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <PlayCircle className="w-5 h-5 mr-2" />
                 <span>Ouvir Amostras</span>
               </Link>
             </div>
-            
-            <div className="flex items-center space-x-8 pt-6 animate-fade-in-right">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">500+</div>
-                <div className="text-sm text-gray-400">Projetos Concluídos</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">100%</div>
-                <div className="text-sm text-gray-400">Satisfação</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">24h</div>
-                <div className="text-sm text-gray-400">Entrega Rápida</div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Right Content - Visual */}
-          <div className="lg:col-span-5 relative animate-fade-in-up">
-            {/* Main Microphone Visual */}
-            <div className="relative z-10 flex items-center justify-center">
-              <div className="relative">
-                {/* Gradient Orb Background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-3xl scale-150 animate-pulse"></div>
-                
-                {/* Microphone Container */}
-                <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-full p-12 border border-purple-500/30 shadow-2xl shadow-purple-500/25">
-                  <div className="relative">
-                    {/* Microphone Icon */}
-                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-full p-8 shadow-2xl shadow-purple-500/50">
-                      <Mic className="w-16 h-16 text-white" />
-                    </div>
-                    
-                    {/* Sound Waves */}
-                    <div className="absolute -right-20 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
-                      <div className="sound-wave bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse" style={{width: '4px', height: '20px'}}></div>
-                      <div className="sound-wave bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse" style={{width: '4px', height: '40px', animationDelay: '0.1s'}}></div>
-                      <div className="sound-wave bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse" style={{width: '4px', height: '60px', animationDelay: '0.2s'}}></div>
-                      <div className="sound-wave bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse" style={{width: '4px', height: '30px', animationDelay: '0.3s'}}></div>
-                      <div className="sound-wave bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse" style={{width: '4px', height: '50px', animationDelay: '0.4s'}}></div>
-                    </div>
-                    
-                    {/* Left Sound Waves */}
-                    <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
-                      <div className="sound-wave bg-gradient-to-t from-pink-500 to-purple-500 rounded-full animate-pulse" style={{width: '4px', height: '25px', animationDelay: '0.5s'}}></div>
-                      <div className="sound-wave bg-gradient-to-t from-pink-500 to-purple-500 rounded-full animate-pulse" style={{width: '4px', height: '45px', animationDelay: '0.6s'}}></div>
-                      <div className="sound-wave bg-gradient-to-t from-pink-500 to-purple-500 rounded-full animate-pulse" style={{width: '4px', height: '35px', animationDelay: '0.7s'}}></div>
-                    </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-6 pt-8 mt-4 border-t border-gray-800/50 animate-fade-in-right">
+              {[
+                { value: "+1000", label: "Clientes Satisfeitos" },
+                { value: "+5000", label: "Locuções Entregues" },
+                { value: "24h", label: "Entrega Expressa" }
+              ].map((stat, index) => (
+                <div key={index} className="group">
+                  <div className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                    {stat.label}
                   </div>
                 </div>
-                
-                {/* Floating Elements */}
-                <div className="absolute -top-10 -left-10 bg-purple-500/20 rounded-full p-4 backdrop-blur-sm animate-bounce">
-                  <Volume2 className="w-6 h-6 text-purple-400" />
-                </div>
-                <div className="absolute -bottom-10 -right-10 bg-pink-500/20 rounded-full p-4 backdrop-blur-sm animate-bounce" style={{animationDelay: '0.5s'}}>
-                  <PlayCircle className="w-6 h-6 text-pink-400" />
-                </div>
-              </div>
+              ))}
             </div>
-            
-            {/* Floating Stats */}
-            <div className="absolute top-8 right-0 bg-white/10 backdrop-blur-xl rounded-2xl p-6 border border-white/20 animate-float">
-              <div className="flex items-center space-x-3">
-                <div className="bg-green-500 rounded-full w-3 h-3 animate-pulse"></div>
-                <div>
-                  <div className="text-white font-semibold">Online Agora</div>
-                  <div className="text-gray-400 text-sm">Atendimento 24/7</div>
+          </div>
+
+          {/* Right Content - Audio Visual Element */}
+          <div className="lg:col-span-5 flex justify-center items-center animate-fade-in-up">
+            <div className="relative w-full max-w-md aspect-square">
+              {/* Background radial glow */}
+              <div className="absolute inset-0 bg-purple-600/10 rounded-full blur-3xl"></div>
+              
+              {/* Animated Background Circle */}
+              <div className="absolute inset-0 rounded-full border-4 border-purple-500/20 animate-pulse"></div>
+              <div className="absolute inset-8 rounded-full border-4 border-indigo-500/20 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              
+              {/* Center Piece */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative w-64 h-64">
+                  {/* Círculos concêntricos animados */}
+                  <div className="absolute inset-0 rounded-full border-2 border-purple-500/30 animate-pulse"></div>
+                  <div className="absolute inset-4 rounded-full border-2 border-indigo-600/30 animate-pulse" style={{ animationDelay: '0.6s' }}></div>
+                  <div className="absolute inset-8 rounded-full border-2 border-purple-400/30 animate-pulse" style={{ animationDelay: '1.2s' }}></div>
+                  
+                  {/* Efeito de brilho com rotação */}
+                  <div className="absolute inset-0 rounded-full overflow-hidden animate-spin-slow">
+                    <div className="absolute -inset-1">
+                      <div className="w-full h-full bg-gradient-conic from-purple-600/40 via-transparent to-indigo-600/40"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Efeito de brilho radial */}
+                  <div className="absolute inset-12 rounded-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-sm animate-pulse"></div>
+                  
+                  {/* Inner Circle with Mic */}
+                  <div className="absolute inset-12 bg-gradient-to-br from-purple-600 to-indigo-800 rounded-full shadow-xl shadow-purple-500/30 flex items-center justify-center animate-pulse">
+                    {/* Reflexo na superfície */}
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <div className="absolute inset-0 opacity-30">
+                        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-br from-white/30 to-transparent"></div>
+                      </div>
+                    </div>
+                    <Mic className="w-20 h-20 text-white drop-shadow-lg" strokeWidth={1.5} />
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="absolute bottom-8 left-0 bg-white/10 backdrop-blur-xl rounded-2xl p-6 border border-white/20 animate-float" style={{animationDelay: '1s'}}>
-              <div className="flex items-center space-x-3">
-                <div className="bg-purple-500 rounded-full p-2">
-                  <Mic className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <div className="text-white font-semibold">Qualidade Premium</div>
-                  <div className="text-gray-400 text-sm">Estúdio Profissional</div>
-                </div>
-              </div>
+              
+              {/* Floating Elements */}
+              <div className="absolute top-5 right-10 w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full opacity-80 animate-float"></div>
+              <div className="absolute bottom-10 left-5 w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full opacity-70 animate-float" style={{animationDelay: '0.5s'}}></div>
+              <div className="absolute top-1/2 -left-4 w-6 h-6 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full opacity-60 animate-float" style={{animationDelay: '1s'}}></div>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
-        </div>
-      </div>
+      {/* Bottom wave decoration */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-slate-900/50 z-10"></div>
+      <svg className="absolute bottom-0 left-0 right-0 z-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="#0f1729" fillOpacity="0.3" d="M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,218.7C840,213,960,171,1080,165.3C1200,160,1320,192,1380,208L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+      </svg>
     </section>
   );
 }
