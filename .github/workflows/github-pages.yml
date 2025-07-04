@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: "18"
           cache: 'npm'
-          cache-dependency-path: './voicetel-frontend/package-lock.json'
+          cache-dependency-path: './4studio-frontend/package-lock.json'
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -35,21 +35,21 @@ jobs:
           static_site_generator: next
       
       - name: Install dependencies
-        run: cd voicetel-frontend && npm ci
+        run: cd 4studio-frontend && npm ci
       
       - name: Build with Next.js
-        run: cd voicetel-frontend && npm run build
+        run: cd 4studio-frontend && npm run build
         env:
           # Set production API URL if available
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || '' }}
       
       - name: Copy .nojekyll file
-        run: touch ./voicetel-frontend/out/.nojekyll
+        run: touch ./4studio-frontend/out/.nojekyll
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./voicetel-frontend/out
+          path: ./4studio-frontend/out
 
   deploy:
     environment:

@@ -1,20 +1,22 @@
 'use client';
 
-// Base API URL
-// Determine if we're running on GitHub Pages
-const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+// Base API URL management
+// Determine execution environment
+const isBrowser = typeof window !== 'undefined';
+const isGithubPages = isBrowser && window.location.hostname.includes('github.io');
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Function to dynamically determine API URL
 function getApiBaseUrl() {
-  // Use environment variable if available
+  // Use environment variable if available (highest priority)
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL;
   }
   
-  // If on GitHub Pages, we might need to use a production API
+  // If on GitHub Pages, use production API
   if (isGithubPages) {
-    // Replace with your actual production API endpoint when available
-    return 'https://api.4studio.example.com/api';
+    // For production environment
+    return 'https://api.4studio.com.br/api';
   }
   
   // Default to local development

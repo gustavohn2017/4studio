@@ -1,4 +1,7 @@
 """
+Este arquivo é redundante com 4studio/urls.py e existe para compatibilidade.
+Utilize 4studio/urls.py para novas funcionalidades e atualizações.
+
 URL configuration for 4Studio project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -20,7 +23,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from .views import api_root_view, HomeTemplateView
-from admin_panel.views import SecureLoginView
 
 urlpatterns = [
     # APIs e painéis admin
@@ -28,7 +30,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('admin-panel/', include('admin_panel.urls')),
       # Authentication URLs com segurança aprimorada
-    path('login/', SecureLoginView.as_view(
+    path('login/', auth_views.LoginView.as_view(
         template_name='admin_panel/login.html',
         redirect_authenticated_user=True,
     ), name='login'),

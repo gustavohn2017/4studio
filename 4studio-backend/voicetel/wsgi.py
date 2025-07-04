@@ -1,4 +1,7 @@
 """
+Este arquivo é redundante com 4studio/wsgi.py e existe para compatibilidade.
+Utilize 4studio/wsgi.py para novas funcionalidades e atualizações.
+
 WSGI config for 4Studio project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.

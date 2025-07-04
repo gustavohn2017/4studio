@@ -36,12 +36,25 @@ class SecureLoginView(LoginView):
                 messages.error(self.request, _('Muitas tentativas de login. Por favor, tente novamente após 5 minutos.'))
                 return HttpResponseForbidden(_('Muitas tentativas de login. Por favor, tente novamente após 5 minutos.'))
         
+        # Log de debug para tentativa de login falha
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Tentativa de login falha para usuário: {username}")
+        logger.debug(f"Erros no formulário: {form.errors}")
+        
+        messages.error(self.request, _('Nome de usuário ou senha incorretos. Por favor, verifique suas credenciais.'))
         return super().form_invalid(form)
 
     def form_valid(self, form):
         # Limpa o contador de tentativas quando o login for bem-sucedido
         username = form.cleaned_data.get('username')
         cache.delete(f"login_attempts_{username}")
+        
+        # Log de debug para login bem-sucedido
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Login bem-sucedido para usuário: {username}")
+        
         return super().form_valid(form)
 
 @login_required

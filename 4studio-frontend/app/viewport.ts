@@ -7,7 +7,7 @@ export const viewport: Viewport = {
   userScalable: true,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#4338ca' },
-    { media: '(prefers-color-scheme: dark)', color: '#312e81' }
+    { media: '(prefers-color-scheme: light)', color: '#8b5cf6' }, // Violeta-500
+    { media: '(prefers-color-scheme: dark)', color: '#6b21a8' }   // Violeta-800
   ],
 }

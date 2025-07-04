@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}VoiceTel Admin{% endblock %}</title>
+    <title>{% block title %}4Studio Admin{% endblock %}</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
     {% load static %}
     <script src="{% static 'js/tailwind-config.js' %}"></script>
     
-    <!-- VoiceTel Stylesheets -->
+    <!-- 4Studio Stylesheets -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     
     {% block extra_css %}{% endblock %}
@@ -69,7 +69,7 @@
                     <i class="fas fa-microphone-alt text-2xl text-white"></i>
                 </div>
                 <div class="ml-3">
-                    <h2 class="text-xl font-bold text-white">VoiceTel</h2>
+                    <h2 class="text-xl font-bold text-white">4Studio</h2>
                     <p class="text-sm text-gray-200 opacity-80">Admin Panel</p>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                         
                         <!-- Page title -->
                         <h1 class="ml-4 lg:ml-0 text-xl font-semibold text-white">
-                            {% block header %}VoiceTel Admin{% endblock %}
+                            {% block header %}4Studio Admin{% endblock %}
                         </h1>
                     </div>
 
@@ -307,7 +307,7 @@
         </div>
     </main>
 
-    <!-- VoiceTel Admin Panel JavaScript -->
+    <!-- 4Studio Admin Panel JavaScript -->
     <script src="{% static 'js/admin-panel.js' %}"></script>
     
     {% block extra_js %}{% endblock %}

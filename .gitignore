@@ -12,7 +12,7 @@ eggs/
 .eggs/
 # Exclude Python libs but not frontend libs
 /lib/
-/voicetel-backend/lib/
+/4studio-backend/lib/
 lib64/
 parts/
 sdist/
