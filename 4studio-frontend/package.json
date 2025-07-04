@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build"
+    "export": "next build",
+    "build:github": "GITHUB_PAGES=true next build",
+    "deploy": "npm run build:github && npx gh-pages -d out",
+    "predeploy": "npm run build:github"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
@@ -35,6 +38,7 @@
     "autoprefixer": "^10.4.18",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
