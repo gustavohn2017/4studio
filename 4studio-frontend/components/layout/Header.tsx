@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X, Volume2, Phone } from 'lucide-react';
 
 const Header: React.FC = () => {
@@ -44,12 +43,7 @@ const Header: React.FC = () => {
             href="/" 
             className="flex items-center group"
           >
-            <motion.div 
-              className="flex items-center"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="flex items-center animate-fade-in-left">
               <div className="h-10 w-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:shadow-glow transition-all duration-300">
                 <Volume2 className="h-6 w-6 text-white" />
               </div>
@@ -57,32 +51,23 @@ const Header: React.FC = () => {
                 <span className="font-bold text-xl text-white tracking-tight">4<span className="text-purple-400">Studio</span></span>
                 <span className="block text-xs text-gray-400">Locuções Profissionais</span>
               </div>
-            </motion.div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
             {navigationItems.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
+              <div key={item.name} className="animate-fade-in-up" style={{animationDelay: `${index * 0.1}s`}}>
                 <Link 
                   href={item.href}
                   className="px-4 py-2 mx-1 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors duration-200"
                 >
                   {item.name}
                 </Link>
-              </motion.div>
+              </div>
             ))}
             
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-            >
+            <div className="animate-fade-in-scale">
               <Link 
                 href="#contact" 
                 className="ml-4 px-5 py-2.5 bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-lg hover:shadow-purple-500/20 hover:shadow-lg transition-all duration-200 flex items-center font-medium"
@@ -90,7 +75,7 @@ const Header: React.FC = () => {
                 <Phone className="w-4 h-4 mr-2" />
                 Orçamento
               </Link>
-            </motion.div>
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -111,40 +96,32 @@ const Header: React.FC = () => {
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-slate-900/95 backdrop-blur-md border-t border-white/10"
-          >
-            <div className="container mx-auto px-4 py-4">
-              <nav className="flex flex-col space-y-3">
-                {navigationItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={toggleMobileMenu}
-                    className="px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors duration-200"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                <Link 
-                  href="#contact"
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-slate-900/95 backdrop-blur-md border-t border-white/10 animate-slide-down">
+          <div className="container mx-auto px-4 py-4">
+            <nav className="flex flex-col space-y-3">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
                   onClick={toggleMobileMenu}
-                  className="mt-2 px-4 py-3 bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-lg hover:opacity-90 transition-opacity duration-200 flex items-center justify-center font-medium"
+                  className="px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors duration-200"
                 >
-                  <Phone className="w-4 h-4 mr-2" />
-                  Solicitar Orçamento
+                  {item.name}
                 </Link>
-              </nav>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              ))}
+              <Link 
+                href="#contact"
+                onClick={toggleMobileMenu}
+                className="mt-2 px-4 py-3 bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-lg hover:opacity-90 transition-opacity duration-200 flex items-center justify-center font-medium"
+              >
+                <Phone className="w-4 h-4 mr-2" />
+                Solicitar Orçamento
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

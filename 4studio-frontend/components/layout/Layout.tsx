@@ -3,7 +3,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface LayoutProps {
   children: ReactNode;
@@ -29,17 +28,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Header />
       
       {/* Main Content */}
-      <AnimatePresence mode="wait">
-        <motion.main 
-          className="flex-grow pt-20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-        >
-          {children}
-        </motion.main>
-      </AnimatePresence>
+      <main className="flex-grow pt-20 animate-fade-in">
+        {children}
+      </main>
       
       {/* Footer */}
       <Footer />
@@ -71,16 +62,11 @@ const ScrollToTop = () => {
   };
 
   return (
-    <AnimatePresence>
+    <>
       {isVisible && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
+        <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group animate-glow"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group animate-glow hover:scale-110 active:scale-95"
         >
           <svg
             className="w-5 h-5 group-hover:animate-bounce"
@@ -95,9 +81,9 @@ const ScrollToTop = () => {
               d="M5 10l7-7m0 0l7 7m-7-7v18"
             />
           </svg>
-        </motion.button>
+        </button>
       )}
-    </AnimatePresence>
+    </>
   );
 };
 
