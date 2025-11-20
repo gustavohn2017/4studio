@@ -10,7 +10,25 @@ print(f"PORT: {os.getenv('PORT', '8000')}")
 print(f"DATABASE_URL: {os.getenv('DATABASE_URL', 'NOT SET')[:30]}...")
 print(f"DJANGO_SETTINGS_MODULE: {os.getenv('DJANGO_SETTINGS_MODULE', 'NOT SET')}")
 print(f"DEBUG: {os.getenv('DEBUG', 'NOT SET')}")
+print(f"ALLOWED_HOSTS: {os.getenv('ALLOWED_HOSTS', 'NOT SET')}")
 print("=" * 50)
+
+# Test Django settings
+print("\nTesting Django configuration...")
+try:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', '4studio.settings_prod')
+    import django
+    django.setup()
+    from django.conf import settings
+    print(f"✓ ROOT_URLCONF: {settings.ROOT_URLCONF}")
+    print(f"✓ WSGI_APPLICATION: {settings.WSGI_APPLICATION}")
+    print(f"✓ Database: {settings.DATABASES['default']['ENGINE']}")
+    print(f"✓ Installed apps: {len(settings.INSTALLED_APPS)} apps")
+except Exception as e:
+    print(f"✗ Django configuration error: {e}")
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
 
 def run_command(cmd, description):
     """Run a command and handle errors"""
@@ -52,7 +70,12 @@ cmd = [
     "--timeout", "120",
     "--access-logfile", "-",
     "--error-logfile", "-",
-    "--log-level", "info"
+    "--log-level", "debug",
+    "--capture-output",
+    "--enable-stdio-inheritance"
 ]
+
+print(f"Command: {' '.join(cmd)}")
+sys.stdout.flush()
 
 os.execvp("gunicorn", cmd)

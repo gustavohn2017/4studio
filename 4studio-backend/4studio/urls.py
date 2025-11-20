@@ -19,9 +19,17 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
+from django.http import JsonResponse
 from .views import test_connection_view
 
+def health_check(request):
+    """Health check endpoint para Railway"""
+    return JsonResponse({"status": "ok", "message": "4Studio API is running"})
+
 urlpatterns = [
+    # Health check direto no root URLs
+    path('health/', health_check, name='health'),
+    
     # Redireciona a página inicial (/) para a tela de login do painel administrativo.
     path('', RedirectView.as_view(url='/admin-panel/login/', permanent=False), name='home-redirect'),
     
