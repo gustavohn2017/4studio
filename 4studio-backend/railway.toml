@@ -1,9 +1,9 @@
 [build]
-builder = "NIXPACKS"
-buildCommand = "pip install -r requirements.txt && chmod +x build.sh && ./build.sh"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "gunicorn 4studio.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120"
+startCommand = "chmod +x start.sh && ./start.sh"
 healthcheckPath = "/api/health/"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
