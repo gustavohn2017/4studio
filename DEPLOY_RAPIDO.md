@@ -11,7 +11,11 @@
 2. **Criar Projeto**
    - Click "New Project"
    - "Deploy from GitHub repo"
-   - Selecione `4studio`
+   - Selecione `4studio` (ou `voicetel`)
+   - ⚠️ **IMPORTANTE**: Após criar, vá em:
+     - "Settings" → "Service Settings" → "Root Directory"
+     - Configure: `4studio-backend`
+     - Salve e aguarde redeploy
 
 3. **Adicionar PostgreSQL**
    - Click "+ New"
