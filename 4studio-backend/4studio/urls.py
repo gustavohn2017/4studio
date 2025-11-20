@@ -19,19 +19,38 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .views import test_connection_view
 
 def health_check(request):
     """Health check endpoint para Railway"""
-    return JsonResponse({"status": "ok", "message": "4Studio API is running"})
+    return JsonResponse({
+        "status": "ok", 
+        "message": "4Studio API is running",
+        "django_settings": settings.SETTINGS_MODULE,
+        "debug": settings.DEBUG,
+        "allowed_hosts": settings.ALLOWED_HOSTS
+    })
+
+def root_view(request):
+    """View de teste para a raiz"""
+    return HttpResponse("""
+        <h1>4Studio Backend está funcionando!</h1>
+        <p>Endpoints disponíveis:</p>
+        <ul>
+            <li><a href="/health/">/health/</a> - Health check</li>
+            <li><a href="/admin/">/admin/</a> - Django Admin</li>
+            <li><a href="/admin-panel/">/admin-panel/</a> - Painel Administrativo</li>
+            <li><a href="/api/">/api/</a> - API REST</li>
+        </ul>
+    """)
 
 urlpatterns = [
     # Health check direto no root URLs
     path('health/', health_check, name='health'),
     
-    # Redireciona a página inicial (/) para a tela de login do painel administrativo.
-    path('', RedirectView.as_view(url='/admin-panel/login/', permanent=False), name='home-redirect'),
+    # Página inicial de teste
+    path('', root_view, name='home'),
     
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
