@@ -54,6 +54,26 @@ MIDDLEWARE = [
     'admin_panel.middleware.AdminPanelMiddleware',  # Admin panel middleware
 ]
 
+ROOT_URLCONF = '4studio.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = '4studio.wsgi.application'
+
 # Database
 # Railway provides DATABASE_URL automatically
 DATABASES = {
@@ -91,9 +111,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Use WhiteNoise for static files serving (no external storage needed)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# Only include STATICFILES_DIRS if the directory exists
+# Railway doesn't need this, static files are collected to STATIC_ROOT
+# STATICFILES_DIRS = []
 
 # Media files
 MEDIA_URL = '/media/'
