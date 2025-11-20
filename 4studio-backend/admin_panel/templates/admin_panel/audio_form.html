@@ -1,124 +1,26 @@
-{% extends 'admin_panel/base.html' %}
+{% extends "admin_panel/base.html" %}
 
-{% block title %}{{ title }} - 4Studio Admin{% endblock %}
+{% block title %}{% if audio %}Editar Áudio{% else %}Adicionar Áudio{% endif %}{% endblock %}
+{% block page_title %}{% if audio %}Editar Áudio{% else %}Adicionar Novo Áudio{% endif %}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>{{ title }}</h1>
-    <a href="{% url 'audio_manager' %}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left me-2"></i> Voltar
-    </a>
-</div>
-
-<div class="card">
-    <div class="card-body">
-        <form method="post" enctype="multipart/form-data">
+<div class="card-modern">
+    <div class="p-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
             
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<p class="mt-2 text-sm text-gray-400">{{ field.help_text }}</p>{% endif %}
+                    {% for error in field.errors %}<p class="text-red-400 text-sm mt-1">{{ error }}</p>{% endfor %}
                 </div>
-            {% endif %}
-            
-            <div class="row">
-                <!-- Title -->
-                <div class="col-md-6 mb-3">
-                    <label for="{{ form.title.id_for_label }}" class="form-label">Título</label>
-                    {{ form.title.errors }}
-                    <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" 
-                           class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
-                           value="{{ form.title.value|default:'' }}" required>
-                </div>
-                
-                <!-- Featured -->
-                <div class="col-md-6 mb-3">
-                    <div class="form-check mt-4">
-                        {{ form.featured.errors }}
-                        <input type="checkbox" name="{{ form.featured.name }}" id="{{ form.featured.id_for_label }}" 
-                               class="form-check-input {% if form.featured.errors %}is-invalid{% endif %}" 
-                               {% if form.featured.value %}checked{% endif %}>
-                        <label for="{{ form.featured.id_for_label }}" class="form-check-label">Em Destaque</label>
-                    </div>
-                </div>
-                
-                <!-- Category -->
-                <div class="col-md-6 mb-3">
-                    <label for="{{ form.category.id_for_label }}" class="form-label">Categoria</label>
-                    {{ form.category.errors }}
-                    <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" 
-                            class="form-select {% if form.category.errors %}is-invalid{% endif %}" required>
-                        <option value="" {% if not form.category.value %}selected{% endif %}>Selecione uma categoria</option>
-                        {% for choice in form.category.field.choices %}
-                            <option value="{{ choice.0 }}" {% if form.category.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                                {{ choice.1 }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <!-- Voice Type -->
-                <div class="col-md-6 mb-3">
-                    <label for="{{ form.voice_type.id_for_label }}" class="form-label">Tipo de Voz</label>
-                    {{ form.voice_type.errors }}
-                    <select name="{{ form.voice_type.name }}" id="{{ form.voice_type.id_for_label }}" 
-                            class="form-select {% if form.voice_type.errors %}is-invalid{% endif %}" required>
-                        <option value="" {% if not form.voice_type.value %}selected{% endif %}>Selecione um tipo de voz</option>
-                        {% for choice in form.voice_type.field.choices %}
-                            <option value="{{ choice.0 }}" {% if form.voice_type.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
-                                {{ choice.1 }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <!-- Description -->
-                <div class="col-12 mb-3">
-                    <label for="{{ form.description.id_for_label }}" class="form-label">Descrição</label>
-                    {{ form.description.errors }}
-                    <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" 
-                              class="form-control {% if form.description.errors %}is-invalid{% endif %}" rows="3">{{ form.description.value|default:'' }}</textarea>
-                </div>
-                
-                <!-- Duration -->
-                <div class="col-md-6 mb-3">
-                    <label for="{{ form.duration.id_for_label }}" class="form-label">Duração</label>
-                    {{ form.duration.errors }}
-                    <input type="time" name="{{ form.duration.name }}" id="{{ form.duration.id_for_label }}" 
-                           class="form-control {% if form.duration.errors %}is-invalid{% endif %}" 
-                           value="{{ form.duration.value|default:'' }}" step="1">
-                    <div class="form-text">Formato: minutos:segundos</div>
-                </div>
-                
-                <!-- Audio File -->
-                <div class="col-md-6 mb-3">
-                    <label for="{{ form.audio_file.id_for_label }}" class="form-label">Arquivo de Áudio</label>
-                    {{ form.audio_file.errors }}
-                    <input type="file" name="{{ form.audio_file.name }}" id="{{ form.audio_file.id_for_label }}" 
-                           class="form-control {% if form.audio_file.errors %}is-invalid{% endif %}" 
-                           {% if not audio %}required{% endif %} accept="audio/*">
-                    
-                    {% if audio and audio.audio_file %}
-                        <div class="mt-2">
-                            <p>Arquivo atual: <a href="{{ audio.audio_file.url }}" target="_blank">{{ audio.audio_file.name }}</a></p>
-                            <audio controls class="w-100 mt-2">
-                                <source src="{{ audio.audio_file.url }}" type="audio/mpeg">
-                                Seu navegador não suporta o elemento de áudio.
-                            </audio>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i> Salvar
-                </button>
-                <a href="{% url 'audio_manager' %}" class="btn btn-outline-secondary">
-                    <i class="fas fa-times me-2"></i> Cancelar
-                </a>
+            {% endfor %}
+
+            <div class="flex justify-end space-x-4 pt-4">
+                <a href="{% url 'admin_panel:audio_manager' %}" class="btn-secondary-modern">Cancelar</a>
+                <button type="submit" class="btn-primary-modern btn-enhanced">Salvar Áudio</button>
             </div>
         </form>
     </div>

@@ -1,0 +1,28 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}{% if testimonial %}Editar Depoimento{% else %}Adicionar Depoimento{% endif %}{% endblock %}
+{% block page_title %}{% if testimonial %}Editar Depoimento{% else %}Adicionar Novo Depoimento{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card-modern">
+    <div class="p-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<p class="mt-2 text-sm text-gray-400">{{ field.help_text }}</p>{% endif %}
+                    {% for error in field.errors %}<p class="text-red-400 text-sm mt-1">{{ error }}</p>{% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="flex justify-end space-x-4 pt-4">
+                <a href="{% url 'admin_panel:testimonials_manager' %}" class="btn-secondary-modern">Cancelar</a>
+                <button type="submit" class="btn-primary-modern btn-enhanced">Salvar Depoimento</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

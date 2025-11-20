@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.conf import settings
 
@@ -17,10 +17,15 @@ def api_root_view(request):
             "api": "/api/",
             "admin": "/admin/",
             "admin_panel": "/admin-panel/",
+            "test_connection": "/test-connection/"
         },
         "frontend": "http://localhost:3000"
     }
     return JsonResponse(response_data)
+
+def test_connection_view(request):
+    """View para a página de teste de conexão"""
+    return render(request, 'test_connection.html')
 
 class HomeTemplateView(TemplateView):
     """

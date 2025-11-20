@@ -18,37 +18,24 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth import views as auth_views
-from .views import api_root_view, HomeTemplateView
-from admin_panel.views import SecureLoginView
+from django.views.generic.base import RedirectView
+from .views import test_connection_view
 
 urlpatterns = [
-    # APIs e painéis admin
+    # Redireciona a página inicial (/) para a tela de login do painel administrativo.
+    path('', RedirectView.as_view(url='/admin-panel/login/', permanent=False), name='home-redirect'),
+    
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('admin-panel/', include('admin_panel.urls')),
-      # Authentication URLs com segurança aprimorada
-    path('login/', SecureLoginView.as_view(
-        template_name='admin_panel/login.html',
-        redirect_authenticated_user=True,
-    ), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(
-        next_page='login',
-        extra_context={'message': 'Você saiu do sistema com segurança.'}
-    ), name='logout'),
-    path('senha/', auth_views.PasswordChangeView.as_view(
-        template_name='admin_panel/password_change.html',
-        success_url='/senha/sucesso/'
-    ), name='password_change'),
-    path('senha/sucesso/', auth_views.PasswordChangeDoneView.as_view(
-        template_name='admin_panel/password_change_done.html'
-    ), name='password_change_done'),
     
-    # Página inicial do backend
-    path('', HomeTemplateView.as_view(), name='home'),
-    path('api-info/', api_root_view, name='api-info'),
+    # Página de teste de conexão
+    path('test-connection/', test_connection_view, name='test_connection'),
+    
+    # Inclui TODAS as URLs do painel administrativo sob o prefixo /admin-panel/
+    # Isso inclui dashboard, login, logout, recuperação de senha, etc.
+    path('admin-panel/', include('admin_panel.urls', namespace='admin_panel')),
 ]
 
-# Serve media files during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

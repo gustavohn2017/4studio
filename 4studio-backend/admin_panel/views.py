@@ -5,11 +5,11 @@ from django.utils import timezone
 from django.http import JsonResponse, HttpResponseForbidden
 from api.models import VoiceCategory, VoiceType, AudioSample, Testimonial, ContactRequest
 from django.db.models import Count, Q
-from datetime import datetime, timedelta
-from .forms import AudioSampleForm, TestimonialForm
+from .forms import AudioSampleForm, TestimonialForm, VoiceCategoryForm, VoiceTypeForm
 from django.contrib.auth.views import LoginView
 from django.core.cache import cache
 from django.utils.translation import gettext as _
+from django.http import HttpResponse
 
 # Função para tratamento de falhas CSRF
 def csrf_failure_view(request, reason=""):
@@ -22,6 +22,22 @@ def csrf_failure_view(request, reason=""):
 # Classe personalizada para o login com bloqueio de tentativas
 class SecureLoginView(LoginView):
     template_name = 'admin_panel/login.html'
+    # O authentication_form padrão já é o AuthenticationForm, não precisa ser explícito
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['username'].widget.attrs.update({
+            'class': 'w-full pl-12 pr-4 py-3.5 bg-slate-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 transition-all duration-200 focus:bg-slate-800/80 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 focus:outline-none hover:border-gray-600/50',
+            'placeholder': 'Digite seu usuário ou e-mail',
+            'aria-label': 'Usuário ou e-mail',
+            'autofocus': 'autofocus'
+        })
+        form.fields['password'].widget.attrs.update({
+            'class': 'w-full pl-12 pr-4 py-3.5 bg-slate-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 transition-all duration-200 focus:bg-slate-800/80 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 focus:outline-none hover:border-gray-600/50',
+            'placeholder': '••••••••',
+            'aria-label': 'Senha'
+        })
+        return form
     
     def form_invalid(self, form):
         # Registra tentativas falhas para prevenção de força bruta
@@ -61,14 +77,13 @@ class SecureLoginView(LoginView):
 def admin_dashboard(request):
     """Admin dashboard with overview statistics"""
     context = {
-        'audio_count': AudioSample.objects.count(),
-        'categories': VoiceCategory.objects.annotate(samples_count=Count('audio_samples')),
-        'voice_types': VoiceType.objects.annotate(samples_count=Count('audio_samples')),
-        'recent_audio': AudioSample.objects.order_by('-created_at')[:5],
-        'testimonials_count': Testimonial.objects.count(),
-        'active_testimonials': Testimonial.objects.filter(active=True).count(),
-        'contact_requests': ContactRequest.objects.count(),
-        'pending_requests': ContactRequest.objects.filter(contacted=False).count(),
+        'total_audio_samples': AudioSample.objects.count(),
+        'total_categories': VoiceCategory.objects.count(),
+        'total_voice_types': VoiceType.objects.count(),
+        'total_testimonials': Testimonial.objects.count(),
+        'category_counts': VoiceCategory.objects.annotate(sample_count=Count('audio_samples')),
+        'recent_contacts': ContactRequest.objects.order_by('-created_at')[:5],
+        'recent_uploads': AudioSample.objects.order_by('-created_at')[:5],
     }
     return render(request, 'admin_panel/dashboard.html', context)
 
@@ -114,94 +129,43 @@ def audio_manager(request):
 def audio_upload(request):
     """Upload new audio samples"""
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        category_id = request.POST.get('category')
-        voice_type_id = request.POST.get('voice_type')
-        featured = bool(request.POST.get('featured', False))
-        audio_file = request.FILES.get('audio_file')
-        
-        if title and audio_file and category_id and voice_type_id:
-            try:
-                category = VoiceCategory.objects.get(id=category_id)
-                voice_type = VoiceType.objects.get(id=voice_type_id)
-                
-                AudioSample.objects.create(
-                    title=title,
-                    description=description,
-                    category=category,
-                    voice_type=voice_type,
-                    featured=featured,
-                    audio_file=audio_file,
-                )
-                messages.success(request, 'Áudio adicionado com sucesso!')
-                return redirect('audio_manager')
-                
-            except Exception as e:
-                messages.error(request, f'Erro ao adicionar áudio: {str(e)}')
+        form = AudioSampleForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Áudio adicionado com sucesso!')
+            return redirect('admin_panel:audio_manager')
         else:
-            messages.error(request, 'Por favor, preencha todos os campos obrigatórios.')
-    
-    context = {
-        'categories': VoiceCategory.objects.all(),
-        'voice_types': VoiceType.objects.all(),
-    }
-    return render(request, 'admin_panel/audio_form.html', context)
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
+    else:
+        form = AudioSampleForm()
+    return render(request, 'admin_panel/audio_form.html', {'form': form})
 
 @login_required
 def audio_edit(request, audio_id):
     """Edit existing audio sample"""
     audio = get_object_or_404(AudioSample, id=audio_id)
-    
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        category_id = request.POST.get('category')
-        voice_type_id = request.POST.get('voice_type')
-        featured = bool(request.POST.get('featured', False))
-        
-        if title and category_id and voice_type_id:
-            try:
-                category = VoiceCategory.objects.get(id=category_id)
-                voice_type = VoiceType.objects.get(id=voice_type_id)
-                
-                audio.title = title
-                audio.description = description
-                audio.category = category
-                audio.voice_type = voice_type
-                audio.featured = featured
-                
-                if 'audio_file' in request.FILES:
-                    audio.audio_file = request.FILES['audio_file']
-                
-                audio.save()
-                messages.success(request, 'Áudio atualizado com sucesso!')
-                return redirect('audio_manager')
-                
-            except Exception as e:
-                messages.error(request, f'Erro ao atualizar áudio: {str(e)}')
+        form = AudioSampleForm(request.POST, request.FILES, instance=audio)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Áudio atualizado com sucesso!')
+            return redirect('admin_panel:audio_manager')
         else:
-            messages.error(request, 'Por favor, preencha todos os campos obrigatórios.')
-    
-    context = {
-        'audio': audio,
-        'categories': VoiceCategory.objects.all(),
-        'voice_types': VoiceType.objects.all(),
-    }
-    return render(request, 'admin_panel/audio_form.html', context)
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
+    else:
+        form = AudioSampleForm(instance=audio)
+    return render(request, 'admin_panel/audio_form.html', {'form': form, 'audio': audio})
 
 @login_required
 def audio_delete(request, audio_id):
     """Delete audio sample"""
     audio = get_object_or_404(AudioSample, id=audio_id)
-    
     if request.method == 'POST':
         audio.delete()
         messages.success(request, 'Áudio excluído com sucesso!')
-        return redirect('audio_manager')
-    
+        return redirect('admin_panel:audio_manager')
     context = {'audio': audio}
-    return render(request, 'admin_panel/audio_delete.html', context)
+    return render(request, 'admin_panel/audio_delete_confirm.html', context)
 
 @login_required
 def testimonials_manager(request):
@@ -218,83 +182,48 @@ def testimonials_manager(request):
 def testimonial_add(request):
     """Add new testimonial"""
     if request.method == 'POST':
-        client_name = request.POST.get('client_name')
-        company = request.POST.get('company')
-        quote = request.POST.get('quote')
-        active = bool(request.POST.get('active', False))
-        
-        if client_name and quote:
-            try:
-                testimonial = Testimonial(
-                    client_name=client_name,
-                    company=company,
-                    quote=quote,
-                    active=active,
-                )
-                
-                if 'image' in request.FILES:
-                    testimonial.image = request.FILES['image']
-                    
-                testimonial.save()
-                messages.success(request, 'Depoimento adicionado com sucesso!')
-                return redirect('testimonials_manager')
-                
-            except Exception as e:
-                messages.error(request, f'Erro ao adicionar depoimento: {str(e)}')
+        form = TestimonialForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Depoimento adicionado com sucesso!')
+            return redirect('admin_panel:testimonials_manager')
         else:
-            messages.error(request, 'Por favor, preencha todos os campos obrigatórios.')
-    
-    return render(request, 'admin_panel/testimonial_form.html')
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
+    else:
+        form = TestimonialForm()
+    return render(request, 'admin_panel/testimonial_form.html', {'form': form})
 
 @login_required
 def testimonial_edit(request, testimonial_id):
     """Edit existing testimonial"""
     testimonial = get_object_or_404(Testimonial, id=testimonial_id)
-    
     if request.method == 'POST':
-        client_name = request.POST.get('client_name')
-        company = request.POST.get('company')
-        quote = request.POST.get('quote')
-        active = bool(request.POST.get('active', False))
-        
-        if client_name and quote:
-            try:
-                testimonial.client_name = client_name
-                testimonial.company = company
-                testimonial.quote = quote
-                testimonial.active = active
-                
-                if 'image' in request.FILES:
-                    testimonial.image = request.FILES['image']
-                    
-                testimonial.save()
-                messages.success(request, 'Depoimento atualizado com sucesso!')
-                return redirect('testimonials_manager')
-                
-            except Exception as e:
-                messages.error(request, f'Erro ao atualizar depoimento: {str(e)}')
+        form = TestimonialForm(request.POST, request.FILES, instance=testimonial)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Depoimento atualizado com sucesso!')
+            return redirect('admin_panel:testimonials_manager')
         else:
-            messages.error(request, 'Por favor, preencha todos os campos obrigatórios.')
-    
-    context = {'testimonial': testimonial}
-    return render(request, 'admin_panel/testimonial_form.html', context)
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
+    else:
+        form = TestimonialForm(instance=testimonial)
+    return render(request, 'admin_panel/testimonial_form.html', {'form': form, 'testimonial': testimonial})
 
 @login_required
 def testimonial_delete(request, testimonial_id):
     """Delete testimonial"""
     testimonial = get_object_or_404(Testimonial, id=testimonial_id)
-    
     if request.method == 'POST':
         testimonial.delete()
         messages.success(request, 'Depoimento excluído com sucesso!')
-        return redirect('testimonials_manager')
-    
+        return redirect('admin_panel:testimonials_manager')
     context = {'testimonial': testimonial}
-    return render(request, 'admin_panel/testimonial_delete.html', context)
+    return render(request, 'admin_panel/testimonial_delete_confirm.html', context)
 
 @login_required
 def contact_requests(request):
     """Manage contact requests"""
+    
     # Apply filters if provided
     contact_requests_query = ContactRequest.objects.all().order_by('-created_at')
     
@@ -354,116 +283,94 @@ def mark_contacted(request, request_id):
     contact_request = get_object_or_404(ContactRequest, id=request_id)
     contact_request.contacted = not contact_request.contacted
     contact_request.save()
-    return redirect('contact_request_detail', request_id=request_id)
+    return redirect('admin_panel:contact_request_detail', request_id=request_id)
 
 @login_required
 def category_manager(request):
     """Manage voice categories"""
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        
-        if action == 'create':
-            name = request.POST.get('name')
-            description = request.POST.get('description')
-            
-            if name:
-                VoiceCategory.objects.create(
-                    name=name,
-                    description=description
-                )
-                messages.success(request, 'Categoria criada com sucesso!')
-            else:
-                messages.error(request, 'Nome da categoria é obrigatório.')
-        
-        elif action == 'update':
-            category_id = request.POST.get('category_id')
-            name = request.POST.get('name')
-            description = request.POST.get('description')
-            
-            if category_id and name:
-                category = get_object_or_404(VoiceCategory, id=category_id)
-                category.name = name
-                category.description = description
-                category.save()
-                messages.success(request, 'Categoria atualizada com sucesso!')
-            else:
-                messages.error(request, 'Informações incompletas para atualização.')
-        
-        elif action == 'delete':
-            category_id = request.POST.get('category_id')
-            
-            if category_id:
-                try:
-                    category = get_object_or_404(VoiceCategory, id=category_id)
-                    if category.audio_samples.exists():
-                        messages.error(request, f'Não é possível excluir: existem {category.audio_samples.count()} áudios associados a esta categoria.')
-                    else:
-                        category.delete()
-                        messages.success(request, 'Categoria excluída com sucesso!')
-                except Exception as e:
-                    messages.error(request, f'Erro ao excluir categoria: {str(e)}')
-            else:
-                messages.error(request, 'ID da categoria não fornecido.')
-        
-        return redirect('category_manager')
-    
     categories = VoiceCategory.objects.annotate(samples_count=Count('audio_samples')).order_by('name')
     return render(request, 'admin_panel/category_manager.html', {'categories': categories})
 
 @login_required
+def category_add(request):
+    if request.method == 'POST':
+        form = VoiceCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Categoria criada com sucesso!')
+            return redirect('admin_panel:category_manager')
+    else:
+        form = VoiceCategoryForm()
+    return render(request, 'admin_panel/category_form.html', {'form': form})
+
+@login_required
+def category_edit(request, category_id):
+    category = get_object_or_404(VoiceCategory, id=category_id)
+    if request.method == 'POST':
+        form = VoiceCategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Categoria atualizada com sucesso!')
+            return redirect('admin_panel:category_manager')
+    else:
+        form = VoiceCategoryForm(instance=category)
+    return render(request, 'admin_panel/category_form.html', {'form': form, 'category': category})
+
+@login_required
+def category_delete(request, category_id):
+    category = get_object_or_404(VoiceCategory, id=category_id)
+    if category.audio_samples.exists():
+        messages.error(request, f'Não é possível excluir: existem {category.audio_samples.count()} áudios associados a esta categoria.')
+        return redirect('admin_panel:category_manager')
+    
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, 'Categoria excluída com sucesso!')
+        return redirect('admin_panel:category_manager')
+        
+    return render(request, 'admin_panel/category_delete_confirm.html', {'category': category})
+
+@login_required
 def voice_type_manager(request):
     """Manage voice types"""
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        
-        if action == 'create':
-            name = request.POST.get('name')
-            gender = request.POST.get('gender')
-            is_ai = bool(request.POST.get('is_ai', False))
-            
-            if name and gender:
-                VoiceType.objects.create(
-                    name=name,
-                    gender=gender,
-                    is_ai=is_ai
-                )
-                messages.success(request, 'Tipo de voz criado com sucesso!')
-            else:
-                messages.error(request, 'Nome e gênero são obrigatórios.')
-        
-        elif action == 'update':
-            voice_type_id = request.POST.get('voice_type_id')
-            name = request.POST.get('name')
-            gender = request.POST.get('gender')
-            is_ai = bool(request.POST.get('is_ai', False))
-            
-            if voice_type_id and name and gender:
-                voice_type = get_object_or_404(VoiceType, id=voice_type_id)
-                voice_type.name = name
-                voice_type.gender = gender
-                voice_type.is_ai = is_ai
-                voice_type.save()
-                messages.success(request, 'Tipo de voz atualizado com sucesso!')
-            else:
-                messages.error(request, 'Informações incompletas para atualização.')
-        
-        elif action == 'delete':
-            voice_type_id = request.POST.get('voice_type_id')
-            
-            if voice_type_id:
-                try:
-                    voice_type = get_object_or_404(VoiceType, id=voice_type_id)
-                    if voice_type.audio_samples.exists():
-                        messages.error(request, f'Não é possível excluir: existem {voice_type.audio_samples.count()} áudios associados a este tipo de voz.')
-                    else:
-                        voice_type.delete()
-                        messages.success(request, 'Tipo de voz excluído com sucesso!')
-                except Exception as e:
-                    messages.error(request, f'Erro ao excluir tipo de voz: {str(e)}')
-            else:
-                messages.error(request, 'ID do tipo de voz não fornecido.')
-        
-        return redirect('voice_type_manager')
-    
     voice_types = VoiceType.objects.annotate(samples_count=Count('audio_samples')).order_by('name')
     return render(request, 'admin_panel/voice_type_manager.html', {'voice_types': voice_types})
+
+@login_required
+def voice_type_add(request):
+    if request.method == 'POST':
+        form = VoiceTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tipo de voz criado com sucesso!')
+            return redirect('admin_panel:voice_type_manager')
+    else:
+        form = VoiceTypeForm()
+    return render(request, 'admin_panel/voice_type_form.html', {'form': form})
+
+@login_required
+def voice_type_edit(request, voice_type_id):
+    voice_type = get_object_or_404(VoiceType, id=voice_type_id)
+    if request.method == 'POST':
+        form = VoiceTypeForm(request.POST, instance=voice_type)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tipo de voz atualizado com sucesso!')
+            return redirect('admin_panel:voice_type_manager')
+    else:
+        form = VoiceTypeForm(instance=voice_type)
+    return render(request, 'admin_panel/voice_type_form.html', {'form': form, 'voice_type': voice_type})
+
+@login_required
+def voice_type_delete(request, voice_type_id):
+    voice_type = get_object_or_404(VoiceType, id=voice_type_id)
+    if voice_type.audio_samples.exists():
+        messages.error(request, f'Não é possível excluir: existem {voice_type.audio_samples.count()} áudios associados a este tipo de voz.')
+        return redirect('admin_panel:voice_type_manager')
+
+    if request.method == 'POST':
+        voice_type.delete()
+        messages.success(request, 'Tipo de voz excluído com sucesso!')
+        return redirect('admin_panel:voice_type_manager')
+
+    return render(request, 'admin_panel/voice_type_delete_confirm.html', {'voice_type': voice_type})

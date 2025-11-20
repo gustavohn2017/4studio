@@ -12,6 +12,7 @@
 @import url('./navigation.css');
 @import url('./animations.css');
 @import url('./utilities.css');
+@import url('./admin-panel.css');
 
 /* Tailwind Configuration Overrides
    Note: This file should be loaded after Tailwind CSS

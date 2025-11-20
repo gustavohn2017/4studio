@@ -1,5 +1,5 @@
 /* =================================================================
-   VoiceTel Admin Panel - Main Stylesheet
+   4Studio Admin Panel - Main Stylesheet
    ================================================================= */
 
 /* Import all component stylesheets */
@@ -12,6 +12,7 @@
 @import url('./navigation.css');
 @import url('./animations.css');
 @import url('./utilities.css');
+@import url('./admin-panel.css');
 
 /* Tailwind Configuration Overrides
    Note: This file should be loaded after Tailwind CSS
@@ -20,14 +21,14 @@
 
 /* Global Custom Properties for Consistent Theming */
 :root {
-    /* Color Palette */
-    --color-primary-50: #f0f9ff;
-    --color-primary-100: #e0f2fe;
-    --color-primary-200: #bae6fd;
-    --color-primary-300: #7dd3fc;
-    --color-primary-400: #38bdf8;
-    --color-primary-500: #0ea5e9;
-    --color-primary-600: #0284c7;
+    /* Color Palette - Alinhada com o tema do Frontend (tons de violeta) */
+    --color-primary-50: #faf5ff;
+    --color-primary-100: #f3e8ff;
+    --color-primary-200: #e9d5ff;
+    --color-primary-300: #d8b4fe;
+    --color-primary-400: #c084fc;
+    --color-primary-500: #a855f7;
+    --color-primary-600: #9333ea;
     --color-primary-700: #0369a1;
     --color-primary-800: #075985;
     --color-primary-900: #0c4a6e;
@@ -183,18 +184,18 @@ input[type="search"]::-webkit-search-results-decoration {
     border: 0 !important;
 }
 
-/* VoiceTel Specific Overrides */
-.voicetel-container {
+/* 4Studio Specific Overrides */
+.studio-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 1rem;
 }
 
-.voicetel-section {
+.studio-section {
     margin-bottom: 2rem;
 }
 
-.voicetel-card {
+.studio-card {
     background: rgba(30, 41, 59, 0.95);
     border: 1px solid rgba(71, 85, 105, 0.3);
     border-radius: var(--border-radius-xl);
@@ -202,7 +203,7 @@ input[type="search"]::-webkit-search-results-decoration {
     transition: var(--transition-normal);
 }
 
-.voicetel-card:hover {
+.studio-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
 }

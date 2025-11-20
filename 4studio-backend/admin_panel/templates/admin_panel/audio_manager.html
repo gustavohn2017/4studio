@@ -17,7 +17,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Gerenciar Áudios</h1>
-    <a href="{% url 'audio_upload' %}" class="btn btn-success">
+    <a href="{% url 'admin_panel:audio_upload' %}" class="btn btn-success">
         <i class="fas fa-plus me-2"></i> Novo Áudio
     </a>
 </div>
@@ -28,7 +28,7 @@
         <h5 class="mb-0">Filtros</h5>
     </div>
     <div class="card-body">
-        <form method="get" action="{% url 'audio_manager' %}">
+        <form method="get" action="{% url 'admin_panel:audio_manager' %}">
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label for="category" class="form-label">Categoria</label>
@@ -70,7 +70,7 @@
                     <i class="fas fa-filter me-2"></i> Filtrar
                 </button>
                 {% if request.GET %}
-                    <a href="{% url 'audio_manager' %}" class="btn btn-outline-secondary">
+                    <a href="{% url 'admin_panel:audio_manager' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-times me-2"></i> Limpar filtros
                     </a>
                 {% endif %}
@@ -116,10 +116,10 @@
                         <td>{{ audio.created_at|date:"d/m/Y" }}</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="{% url 'audio_edit' audio.id %}" class="btn btn-warning btn-sm">
+                                <a href="{% url 'admin_panel:audio_edit' audio.id %}" class="btn btn-warning btn-sm">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="{% url 'audio_delete' audio.id %}" class="btn btn-danger btn-sm">
+                                <a href="{% url 'admin_panel:audio_delete' audio.id %}" class="btn btn-danger btn-sm">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -131,7 +131,7 @@
     </div>
 {% else %}
     <div class="alert alert-info">
-        Nenhum áudio encontrado. {% if request.GET %}Tente ajustar os filtros ou {% endif %}<a href="{% url 'audio_upload' %}" class="alert-link">adicione um novo</a>.
+        Nenhum áudio encontrado. {% if request.GET %}Tente ajustar os filtros ou {% endif %}<a href="{% url 'admin_panel:audio_upload' %}" class="alert-link">adicione um novo</a>.
     </div>
 {% endif %}
 {% endblock %}

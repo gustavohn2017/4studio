@@ -4,7 +4,7 @@ djangorestframework==3.16.0
 django-cors-headers==4.7.0
 
 # Banco de dados e armazenamento
-psycopg2-binary==2.9.10  # PostgreSQL driver
+psycopg2-binary==2.9.11  # PostgreSQL driver (atualizado)
 dj-database-url==2.1.0   # Database URL configuration
 
 # Processamento de imagens e mídia

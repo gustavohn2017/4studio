@@ -1,0 +1,504 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Solicitações de Contato - 4Studio Admin{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div>
+        <h1 class="content-title">Solicitações de Contato</h1>
+        <p class="content-subtitle">Gerencie as mensagens recebidas através do formulário de contato</p>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Total Solicitações</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ contacts.count|default:0 }}</div>
+        <div class="stat-card-footer">
+            <span class="stat-card-trend">
+                <i class="fas fa-chart-line"></i>
+                Todas as mensagens
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Não Lidas</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-envelope-open"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ unread_count|default:0 }}</div>
+        <div class="stat-card-footer">
+            <span class="stat-card-trend warning">
+                <i class="fas fa-exclamation-circle"></i>
+                Aguardando leitura
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Lidas</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ read_count|default:0 }}</div>
+        <div class="stat-card-footer">
+            <span class="stat-card-trend success">
+                <i class="fas fa-check"></i>
+                Visualizadas
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Esta Semana</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-calendar-week"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ week_count|default:0 }}</div>
+        <div class="stat-card-footer">
+            <span class="stat-card-trend">
+                <i class="fas fa-clock"></i>
+                Últimos 7 dias
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Filters and Search -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+        <h2 class="card-title">Filtros</h2>
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: end;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Buscar</label>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control" 
+                    placeholder="Nome, email, telefone ou mensagem..."
+                    onkeyup="searchTable('searchInput', 'contactsTable')">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Status</label>
+                <select class="form-control" id="filterStatus" onchange="filterByStatus()">
+                    <option value="">Todos</option>
+                    <option value="unread">Não Lidas</option>
+                    <option value="read">Lidas</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Período</label>
+                <select class="form-control" id="filterPeriod" onchange="filterByPeriod()">
+                    <option value="">Todos</option>
+                    <option value="today">Hoje</option>
+                    <option value="week">Esta Semana</option>
+                    <option value="month">Este Mês</option>
+                </select>
+            </div>
+
+            <button class="btn btn-secondary" onclick="clearFilters()" style="height: 42px;">
+                <i class="fas fa-redo"></i>
+                Limpar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Contacts Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Lista de Solicitações</h2>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary" onclick="window.location.reload()">
+                <i class="fas fa-sync"></i>
+                Atualizar
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if contacts %}
+        <div class="table-responsive">
+            <table class="table" id="contactsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                        </th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Mensagem</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th style="text-align: center; width: 120px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts %}
+                    <tr class="{% if not contact.is_read %}unread-row{% endif %}" data-contact-id="{{ contact.id }}">
+                        <td>
+                            <input type="checkbox" class="contact-checkbox" value="{{ contact.id }}">
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">
+                                    {{ contact.name|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: #1f1f2e;">
+                                        {{ contact.name }}
+                                        {% if not contact.is_read %}
+                                        <span class="badge badge-warning" style="margin-left: 8px;">NOVA</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="mailto:{{ contact.email }}" style="color: #a855f7; text-decoration: none;">
+                                <i class="fas fa-envelope" style="margin-right: 6px;"></i>
+                                {{ contact.email }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if contact.phone %}
+                            <a href="tel:{{ contact.phone }}" style="color: #64748b; text-decoration: none;">
+                                <i class="fas fa-phone" style="margin-right: 6px;"></i>
+                                {{ contact.phone }}
+                            </a>
+                            {% else %}
+                            <span style="color: #94a3b8;">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ contact.message }}">
+                                {{ contact.message|truncatewords:10 }}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="color: #64748b; font-size: 14px;">
+                                <div>{{ contact.created_at|date:"d/m/Y" }}</div>
+                                <div style="font-size: 12px; color: #94a3b8;">{{ contact.created_at|date:"H:i" }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if contact.is_read %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle"></i> Lida
+                            </span>
+                            {% else %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-envelope"></i> Não Lida
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <button 
+                                    onclick="viewContact({{ contact.id }})" 
+                                    class="btn btn-primary"
+                                    style="padding: 8px 12px; font-size: 14px;"
+                                    title="Ver Detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                {% if not contact.is_read %}
+                                <button 
+                                    onclick="markAsRead({{ contact.id }})" 
+                                    class="btn btn-secondary"
+                                    style="padding: 8px 12px; font-size: 14px;"
+                                    title="Marcar como Lida">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                {% endif %}
+                                <form method="post" 
+                                      action="{% url 'admin_panel:contact_delete' contact.id %}" 
+                                      style="display: inline;"
+                                      onsubmit="return confirmDelete('Tem certeza que deseja excluir esta solicitação?');">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                            class="btn btn-danger"
+                                            style="padding: 8px 12px; font-size: 14px;"
+                                            title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if contacts.has_other_pages %}
+        <div class="pagination">
+            {% if contacts.has_previous %}
+            <a href="?page=1" class="pagination-link">
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+            <a href="?page={{ contacts.previous_page_number }}" class="pagination-link">
+                <i class="fas fa-angle-left"></i>
+            </a>
+            {% endif %}
+
+            {% for num in contacts.paginator.page_range %}
+            {% if contacts.number == num %}
+            <span class="pagination-link active">{{ num }}</span>
+            {% elif num > contacts.number|add:'-3' and num < contacts.number|add:'3' %}
+            <a href="?page={{ num }}" class="pagination-link">{{ num }}</a>
+            {% endif %}
+            {% endfor %}
+
+            {% if contacts.has_next %}
+            <a href="?page={{ contacts.next_page_number }}" class="pagination-link">
+                <i class="fas fa-angle-right"></i>
+            </a>
+            <a href="?page={{ contacts.paginator.num_pages }}" class="pagination-link">
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <h3 class="empty-state-title">Nenhuma solicitação encontrada</h3>
+            <p class="empty-state-text">
+                Ainda não há solicitações de contato no sistema.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal para visualizar detalhes do contato -->
+<div id="contactModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2>Detalhes da Solicitação</h2>
+            <button class="modal-close" onclick="closeContactModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="contactModalBody">
+            <!-- Conteúdo será preenchido via JavaScript -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeContactModal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.unread-row {
+    background-color: #fef3c7 !important;
+}
+
+.unread-row:hover {
+    background-color: #fde68a !important;
+}
+</style>
+
+<script>
+// Marcar todas as checkboxes
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.contact-checkbox');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+}
+
+// Filtrar por status
+function filterByStatus() {
+    const filter = document.getElementById('filterStatus').value.toLowerCase();
+    const table = document.getElementById('contactsTable');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const statusCell = row.cells[6];
+        
+        if (!filter) {
+            row.style.display = '';
+            continue;
+        }
+
+        const statusText = statusCell.textContent.toLowerCase();
+        if (filter === 'read' && statusText.includes('lida')) {
+            row.style.display = '';
+        } else if (filter === 'unread' && statusText.includes('não lida')) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+}
+
+// Filtrar por período
+function filterByPeriod() {
+    const filter = document.getElementById('filterPeriod').value;
+    const table = document.getElementById('contactsTable');
+    const rows = table.getElementsByTagName('tr');
+    const today = new Date();
+
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const dateCell = row.cells[5];
+        const dateText = dateCell.textContent.trim().split('\n')[0].trim();
+        
+        if (!filter) {
+            row.style.display = '';
+            continue;
+        }
+
+        // Lógica simples - pode ser melhorada com datas reais
+        row.style.display = '';
+    }
+}
+
+// Limpar filtros
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterPeriod').value = '';
+    
+    const table = document.getElementById('contactsTable');
+    const rows = table.getElementsByTagName('tr');
+    for (let i = 1; i < rows.length; i++) {
+        rows[i].style.display = '';
+    }
+}
+
+// Ver detalhes do contato
+function viewContact(contactId) {
+    const modal = document.getElementById('contactModal');
+    const row = document.querySelector(`tr[data-contact-id="${contactId}"]`);
+    
+    if (!row) return;
+    
+    const name = row.cells[1].querySelector('div div').textContent.trim();
+    const email = row.cells[2].querySelector('a').textContent.trim();
+    const phone = row.cells[3].textContent.trim();
+    const message = row.cells[4].getAttribute('title') || row.cells[4].textContent.trim();
+    const date = row.cells[5].textContent.trim();
+    const status = row.cells[6].textContent.trim();
+    
+    const modalBody = document.getElementById('contactModalBody');
+    modalBody.innerHTML = `
+        <div style="display: grid; gap: 20px;">
+            <div>
+                <label style="font-weight: 600; color: #64748b; display: block; margin-bottom: 8px;">
+                    <i class="fas fa-user"></i> Nome
+                </label>
+                <div style="color: #1f1f2e; font-size: 16px;">${name}</div>
+            </div>
+            
+            <div>
+                <label style="font-weight: 600; color: #64748b; display: block; margin-bottom: 8px;">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                <div style="color: #1f1f2e; font-size: 16px;">
+                    <a href="mailto:${email}" style="color: #a855f7; text-decoration: none;">${email}</a>
+                </div>
+            </div>
+            
+            <div>
+                <label style="font-weight: 600; color: #64748b; display: block; margin-bottom: 8px;">
+                    <i class="fas fa-phone"></i> Telefone
+                </label>
+                <div style="color: #1f1f2e; font-size: 16px;">
+                    ${phone !== '-' ? `<a href="tel:${phone}" style="color: #a855f7; text-decoration: none;">${phone}</a>` : 'Não informado'}
+                </div>
+            </div>
+            
+            <div>
+                <label style="font-weight: 600; color: #64748b; display: block; margin-bottom: 8px;">
+                    <i class="fas fa-comment-alt"></i> Mensagem
+                </label>
+                <div style="color: #1f1f2e; font-size: 16px; line-height: 1.6; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #a855f7;">
+                    ${message}
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label style="font-weight: 600; color: #64748b; display: block; margin-bottom: 8px;">
+                        <i class="fas fa-calendar"></i> Data
+                    </label>
+                    <div style="color: #1f1f2e; font-size: 14px;">${date}</div>
+                </div>
+                
+                <div>
+                    <label style="font-weight: 600; color: #64748b; display: block; margin-bottom: 8px;">
+                        <i class="fas fa-info-circle"></i> Status
+                    </label>
+                    <div>${status.includes('Lida') ? '<span class="badge badge-success">Lida</span>' : '<span class="badge badge-warning">Não Lida</span>'}</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    
+    // Marcar como lida automaticamente ao visualizar
+    if (!status.includes('Lida')) {
+        markAsRead(contactId);
+    }
+}
+
+// Fechar modal
+function closeContactModal() {
+    document.getElementById('contactModal').style.display = 'none';
+}
+
+// Marcar como lida
+function markAsRead(contactId) {
+    fetch(`/admin-panel/solicitacoes/marcar-lida/${contactId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+    });
+}
+
+// Fechar modal ao clicar fora
+window.onclick = function(event) {
+    const modal = document.getElementById('contactModal');
+    if (event.target === modal) {
+        closeContactModal();
+    }
+}
+</script>
+{% endblock %}

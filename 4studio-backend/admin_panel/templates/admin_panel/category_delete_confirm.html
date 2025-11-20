@@ -1,0 +1,23 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}Confirmar Exclusão de Categoria{% endblock %}
+{% block page_title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<div class="card-modern max-w-lg mx-auto">
+    <div class="p-8 text-center">
+        <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-4"></i>
+        <h2 class="text-2xl font-bold text-white mb-2">Tem certeza?</h2>
+        <p class="text-gray-300 mb-6">
+            Você está prestes a excluir permanentemente a categoria: <strong class="text-white">"{{ category.name }}"</strong>. Esta ação não pode ser desfeita.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex justify-center space-x-4">
+                <a href="{% url 'admin_panel:category_manager' %}" class="btn-secondary-modern">Cancelar</a>
+                <button type="submit" class="btn-danger-modern btn-enhanced">Sim, Excluir</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

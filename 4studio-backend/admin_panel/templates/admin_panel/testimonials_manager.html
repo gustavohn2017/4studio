@@ -1,0 +1,218 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Gerenciar Depoimentos - 4Studio Admin{% endblock %}
+
+{% block page_title %}Gerenciar Depoimentos{% endblock %}
+
+{% block content %}
+
+<!-- Header Stats -->
+<div class="stats-grid" style="margin-bottom: 32px;">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Total Depoimentos</div>
+            <div class="stat-card-icon">
+                <i class="fas fa-quote-right"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ testimonials.count|default:0 }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Ativos</div>
+            <div class="stat-card-icon" style="background: rgba(16, 185, 129, 0.1);">
+                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ active_count|default:0 }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-card-title">Inativos</div>
+            <div class="stat-card-icon" style="background: rgba(107, 114, 128, 0.1);">
+                <i class="fas fa-times-circle" style="color: #6b7280;"></i>
+            </div>
+        </div>
+        <div class="stat-card-value">{{ inactive_count|default:0 }}</div>
+    </div>
+</div>
+
+<!-- Actions Bar -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card-body">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div style="flex: 1; min-width: 300px;">
+                <input type="text" 
+                       id="searchInput" 
+                       class="form-control" 
+                       placeholder="Buscar depoimentos..."
+                       onkeyup="searchTable('searchInput', 'testimonialsTable')">
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="{% url 'admin_panel:testimonial_add' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Novo Depoimento
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Table -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Lista de Depoimentos</h3>
+    </div>
+    <div class="card-body">
+        {% if testimonials %}
+        <div class="table-container">
+            <table class="table" id="testimonialsTable">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Empresa</th>
+                        <th>Avaliação</th>
+                        <th>Status</th>
+                        <th>Destaque</th>
+                        <th>Data</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for testimonial in testimonials %}
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                {% if testimonial.image %}
+                                <img src="{{ testimonial.image.url }}" 
+                                     alt="{{ testimonial.client_name }}"
+                                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #a855f7;">
+                                {% else %}
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">
+                                    {{ testimonial.client_name|slice:":1"|upper }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <div style="font-weight: 600;">{{ testimonial.client_name }}</div>
+                                    <div style="font-size: 12px; color: #9ca3af;">{{ testimonial.client_position }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ testimonial.client_company|default:"-" }}</td>
+                        <td>
+                            <div style="display: flex; gap: 2px;">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= testimonial.rating %}
+                                        <i class="fas fa-star" style="color: #f59e0b; font-size: 14px;"></i>
+                                    {% else %}
+                                        <i class="far fa-star" style="color: #6b7280; font-size: 14px;"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="margin-left: 8px; font-size: 14px; color: #9ca3af;">({{ testimonial.rating }})</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if testimonial.is_active %}
+                                <span class="badge badge-success">Ativo</span>
+                            {% else %}
+                                <span class="badge badge-danger">Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if testimonial.featured %}
+                                <span class="badge badge-primary">
+                                    <i class="fas fa-star"></i> Destaque
+                                </span>
+                            {% else %}
+                                <span class="badge" style="background: rgba(107, 114, 128, 0.15); color: #6b7280;">Normal</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ testimonial.created_at|date:"d/m/Y" }}</td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <a href="{% url 'admin_panel:testimonial_edit' testimonial.id %}" 
+                                   class="btn btn-secondary"
+                                   style="padding: 8px 12px; font-size: 14px;"
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="post" 
+                                      action="{% url 'admin_panel:testimonial_delete' testimonial.id %}" 
+                                      style="display: inline;"
+                                      onsubmit="return confirmDelete('Tem certeza que deseja excluir este depoimento?');">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                            class="btn btn-danger"
+                                            style="padding: 8px 12px; font-size: 14px;"
+                                            title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if testimonials.has_other_pages %}
+        <div class="pagination" style="margin-top: 24px;">
+            {% if testimonials.has_previous %}
+                <a href="?page=1" class="pagination-item">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+                <a href="?page={{ testimonials.previous_page_number }}" class="pagination-item">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            {% endif %}
+
+            {% for num in testimonials.paginator.page_range %}
+                {% if testimonials.number == num %}
+                    <span class="pagination-item active">{{ num }}</span>
+                {% elif num > testimonials.number|add:'-3' and num < testimonials.number|add:'3' %}
+                    <a href="?page={{ num }}" class="pagination-item">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if testimonials.has_next %}
+                <a href="?page={{ testimonials.next_page_number }}" class="pagination-item">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+                <a href="?page={{ testimonials.paginator.num_pages }}" class="pagination-item">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div style="text-align: center; padding: 60px 20px; color: #6b7280;">
+            <i class="fas fa-quote-right" style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;"></i>
+            <h3 style="font-size: 20px; font-weight: 600; color: #cbd5e1; margin-bottom: 12px;">
+                Nenhum depoimento cadastrado
+            </h3>
+            <p style="margin-bottom: 24px; font-size: 14px;">
+                Comece adicionando o primeiro depoimento ao sistema.
+            </p>
+            <a href="{% url 'admin_panel:testimonial_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Adicionar Primeiro Depoimento
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Initialize search -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality is already in admin-panel.js
+    console.log('Testimonials Manager loaded');
+});
+</script>
+
+{% endblock %}

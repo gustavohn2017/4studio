@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from .env import load_dotenv
+
+# Carregar variáveis de ambiente
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,7 +82,7 @@ ROOT_URLCONF = '4studio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,45 +101,46 @@ WSGI_APPLICATION = '4studio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Configuração PostgreSQL (desativada temporariamente)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': '4studio_db',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#         'OPTIONS': {
-#             'client_encoding': 'UTF8',
-#         },
-#         'TEST': {
-#             'NAME': 'test_4studio_db',
-#             'ENCODING': 'UTF8',
-#         },
-#     }
-# }
-
-# Usando SQLite para desenvolvimento
+# Configuração PostgreSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', '4studio_db'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+            'connect_timeout': 10,
+        },
+        'TEST': {
+            'NAME': 'test_4studio_db',
+        },
     }
 }
 
+# SQLite (backup - use apenas se PostgreSQL não estiver disponível)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Update for production
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'seu-email@gmail.com'  # Update for production
-EMAIL_HOST_PASSWORD = 'sua-senha-de-app'  # Update for production
-DEFAULT_FROM_EMAIL = '4Studio <noreply@4studio.com.br>'
-ADMIN_EMAIL = 'admin@4studio.com.br'  # Update for production
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@4studio.com.br')
 
-# For development/testing, you can use the console backend
-if DEBUG:
+# Se estiver em modo DEBUG e não tiver configurado as credenciais de e-mail,
+# usa o backend de console
+if DEBUG and not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
@@ -183,6 +188,12 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+# Backends de Autenticação
+AUTHENTICATION_BACKENDS = [
+    'api.authentication.EmailOrUsernameBackend',  # Nosso backend personalizado
+    'django.contrib.auth.backends.ModelBackend',    # Backend padrão do Django
 ]
 
 # Aumentar o número de iterações para o PBKDF2 (padrão é 600000)
@@ -265,6 +276,6 @@ REST_FRAMEWORK = {
 }
 
 # Login/Logout URLs and redirects
-LOGIN_URL = '/login/'
+LOGIN_URL = '/admin-panel/login/'
 LOGIN_REDIRECT_URL = '/admin-panel/'
-LOGOUT_REDIRECT_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/admin-panel/login/'
