@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
 from django.http import JsonResponse, HttpResponse
 from .views import test_connection_view
+from .create_admin_view import create_superuser_view
 
 def health_check(request):
     """Health check endpoint para Railway"""
@@ -39,6 +40,7 @@ def root_view(request):
         <p>Endpoints disponíveis:</p>
         <ul>
             <li><a href="/health/">/health/</a> - Health check</li>
+            <li><a href="/create-admin/">/create-admin/</a> - 🔐 Criar Superuser (TEMPORÁRIO)</li>
             <li><a href="/admin/">/admin/</a> - Django Admin</li>
             <li><a href="/admin-panel/">/admin-panel/</a> - Painel Administrativo</li>
             <li><a href="/api/">/api/</a> - API REST</li>
@@ -48,6 +50,9 @@ def root_view(request):
 urlpatterns = [
     # Health check direto no root URLs
     path('health/', health_check, name='health'),
+    
+    # View temporária para criar superuser
+    path('create-admin/', create_superuser_view, name='create_superuser'),
     
     # Página inicial de teste
     path('', root_view, name='home'),
