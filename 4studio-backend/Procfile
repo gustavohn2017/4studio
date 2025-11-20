@@ -1,1 +1,1 @@
-web: gunicorn 4studio.wsgi --log-file -
+web: gunicorn 4studio.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --access-logfile - --error-logfile -
