@@ -61,7 +61,10 @@ print("\n" + "=" * 50)
 print("Starting Gunicorn...")
 print("=" * 50)
 
-port = os.getenv('PORT', '8000')
+# Railway define PORT automaticamente, geralmente 8080
+port = os.getenv('PORT', '8080')
+print(f"Binding to port: {port}")
+
 cmd = [
     "gunicorn",
     "4studio.wsgi:application",
