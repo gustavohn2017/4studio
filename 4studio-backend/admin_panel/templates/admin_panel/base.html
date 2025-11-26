@@ -14,15 +14,18 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- TailwindCSS CDN como fallback -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Styles -->
-    <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}?v=2.0">
+    <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}?v={{ request.build_absolute_uri|slice:'-10:' }}">
     
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="bg-slate-900 text-white">
     <!-- Layout Wrapper -->
     <div class="admin-layout" x-data="{ sidebarOpen: true, mobileMenu: false }">
         
