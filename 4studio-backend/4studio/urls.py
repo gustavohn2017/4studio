@@ -6,6 +6,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect
 from .views import test_connection_view
 from .create_admin_view import create_superuser_view
 
@@ -18,6 +19,11 @@ def health_check(request):
         "debug": settings.DEBUG,
         "allowed_hosts": settings.ALLOWED_HOSTS
     })
+
+def accounts_login_redirect(request):
+    """Redireciona /accounts/login/ para /admin-panel/login/"""
+    next_url = request.GET.get('next', '/admin-panel/')
+    return redirect(f'/admin-panel/login/?next={next_url}')
 
 def root_view(request):
     """View de teste para a raiz"""
@@ -104,6 +110,9 @@ def root_view(request):
 urlpatterns = [
     # Health check
     path('health/', health_check, name='health'),
+    
+    # Redirecionar /accounts/login/ para /admin-panel/login/
+    path('accounts/login/', accounts_login_redirect, name='accounts_login'),
     
     # View temporária para criar superuser
     path('create-admin/', create_superuser_view, name='create_superuser'),
