@@ -21,8 +21,10 @@ from .views import ( # type: ignore
     voice_type_edit,
     voice_type_delete,
     contact_requests,
-    # Adicione outras views aqui
 )
+
+# App name para namespace
+app_name = 'admin_panel'
 
 urlpatterns = [
     # Rota principal do painel (Dashboard)
@@ -30,7 +32,7 @@ urlpatterns = [
     
     # Rotas de autenticação personalizadas
     path('login/', SecureLoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/admin-panel/login/'), name='logout'),
     
     # Rotas de recuperação de senha (customizadas para o painel)
     path('password_reset/',
@@ -95,6 +97,3 @@ urlpatterns = [
     path('tipos-de-voz/deletar/<int:voice_type_id>/', voice_type_delete, name='voice_type_delete'),
     path('solicitacoes/', contact_requests, name='contact_requests'),
 ]
-
-# O nome do aplicativo é útil para namespacing de URLs, prevenindo conflitos.
-app_name = 'admin_panel'

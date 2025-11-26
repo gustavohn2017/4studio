@@ -167,3 +167,8 @@ LOGGING = {
         },
     },
 }
+
+# Authentication URLs
+LOGIN_URL = '/admin-panel/login/'
+LOGIN_REDIRECT_URL = '/admin-panel/'
+LOGOUT_REDIRECT_URL = '/admin-panel/login/'
