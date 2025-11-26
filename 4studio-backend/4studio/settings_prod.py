@@ -108,12 +108,25 @@ ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@4studio.com.br')
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Use WhiteNoise for static files serving (no external storage needed)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Directories where Django will look for static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
-# Only include STATICFILES_DIRS if the directory exists
-# Railway doesn't need this, static files are collected to STATIC_ROOT
-# STATICFILES_DIRS = []
+# Finders - how Django finds static files
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Use WhiteNoise for static files serving - ManifestStaticFilesStorage sem compressão
+# para evitar problemas de hash em produção
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# WhiteNoise configuration
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = False
+WHITENOISE_MANIFEST_STRICT = False  # Não falha se arquivo não tiver hash
 
 # Media files
 MEDIA_URL = '/media/'

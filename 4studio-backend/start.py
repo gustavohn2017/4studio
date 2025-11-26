@@ -53,8 +53,41 @@ def run_command(cmd, description):
 # Run migrations
 run_command("python manage.py migrate --noinput", "Running database migrations")
 
-# Collect static files
-run_command("python manage.py collectstatic --noinput --clear", "Collecting static files")
+# Collect static files with verbose output
+print("\n" + "=" * 50)
+print("Collecting static files...")
+print("=" * 50)
+result = subprocess.run(
+    "python manage.py collectstatic --noinput --clear -v 2",
+    shell=True,
+    capture_output=True,
+    text=True
+)
+print(result.stdout)
+if result.stderr:
+    print("STDERR:", result.stderr)
+if result.returncode == 0:
+    print("✓ Static files collected successfully")
+else:
+    print("✗ Warning: Static files collection had issues")
+    print(result.stderr)
+
+# List collected static files
+print("\nChecking staticfiles directory...")
+try:
+    import os
+    staticfiles_dir = os.path.join(os.getcwd(), 'staticfiles')
+    if os.path.exists(staticfiles_dir):
+        css_dir = os.path.join(staticfiles_dir, 'css')
+        if os.path.exists(css_dir):
+            css_files = os.listdir(css_dir)
+            print(f"✓ Found {len(css_files)} CSS files: {', '.join(css_files[:5])}")
+        else:
+            print("✗ CSS directory not found in staticfiles")
+    else:
+        print("✗ Staticfiles directory not found")
+except Exception as e:
+    print(f"Could not check staticfiles: {e}")
 
 # Start Gunicorn
 print("\n" + "=" * 50)
