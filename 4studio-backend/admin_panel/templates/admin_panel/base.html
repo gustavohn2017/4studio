@@ -53,7 +53,8 @@
         
         /* Layout Principal */
         .admin-layout {
-            display: flex;
+            display: grid;
+            grid-template-columns: 280px 1fr;
             min-height: 100vh;
             background: linear-gradient(135deg, #0a0a0f 0%, #1a1625 50%, #0a0a0f 100%);
             position: relative;
@@ -74,19 +75,18 @@
         
         /* Sidebar */
         .admin-sidebar {
-            width: 280px;
-            background: rgba(20, 20, 30, 0.8);
+            grid-column: 1 / 2;
+            width: 100%;
+            background: rgba(20, 20, 30, 0.85);
             backdrop-filter: blur(20px);
             border-right: 1px solid rgba(168, 85, 247, 0.15);
-            position: fixed;
-            height: 100vh;
-            left: 0;
+            position: sticky;
             top: 0;
-            z-index: 1000;
+            min-height: 100vh;
+            z-index: 50;
             display: flex;
             flex-direction: column;
             box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         /* Sidebar Header */
@@ -279,26 +279,25 @@
         
         /* Main Content */
         .admin-main {
-            flex: 1;
-            margin-left: 280px;
-            padding: 0;
+            grid-column: 2 / 3;
             min-height: 100vh;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
         /* Header */
         .admin-header {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(168, 85, 247, 0.1);
-            padding: 24px 40px;
+            background: rgba(12, 12, 18, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(168, 85, 247, 0.12);
+            padding: 20px 44px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 60;
         }
         
         .header-left {
@@ -1019,8 +1018,8 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-info">
-                        <p class="user-name">{{ user.get_full_name|default:user.username }}</p>
-                        <p class="user-role">Administrador</p>
+                        <p class="user-name" data-key="userName"></p>
+                        <p class="user-role" data-key="userRole"></p>
                     </div>
                 </div>
             </div>
@@ -1039,21 +1038,21 @@
                 </div>
                 
                 <div class="header-right">
-                    <!-- Notifications -->
+                    <!-- Notifications (placeholder removed) -->
                     <div class="header-action" x-data="{ open: false }">
-                        <button class="icon-btn" @click="open = !open">
+                        <button class="icon-btn" @click="open = !open" aria-label="Notificações">
                             <i class="fas fa-bell"></i>
-                            <span class="badge">3</span>
+                            <span class="badge" x-show="false"></span>
                         </button>
                     </div>
 
-                    <!-- User Menu -->
+                    <!-- User Menu (dynamic via data attributes) -->
                     <div class="header-action" x-data="{ open: false }">
-                        <button class="user-menu-btn" @click="open = !open">
+                        <button class="user-menu-btn" @click="open = !open" aria-label="Menu do usuário">
                             <div class="user-menu-avatar">
                                 <i class="fas fa-user"></i>
                             </div>
-                            <span class="user-menu-name">{{ user.username }}</span>
+                            <span class="user-menu-name" data-key="userName"></span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         

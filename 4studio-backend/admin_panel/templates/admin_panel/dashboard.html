@@ -8,63 +8,47 @@
 <!-- Stats Grid -->
 <div class="stats-grid">
     <!-- Card: Total de Áudios -->
-    <div class="stat-card">
+    <div class="stat-card" data-stat="audios">
         <div class="stat-card-header">
             <div class="stat-card-title">Total de Áudios</div>
             <div class="stat-card-icon">
                 <i class="fas fa-music"></i>
             </div>
         </div>
-        <div class="stat-card-value">{{ total_audio_samples|default:0 }}</div>
-        <div class="stat-card-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>12% este mês</span>
-        </div>
+        <div class="stat-card-value" data-value="audios"></div>
     </div>
 
     <!-- Card: Categorias -->
-    <div class="stat-card">
+    <div class="stat-card" data-stat="categories">
         <div class="stat-card-header">
             <div class="stat-card-title">Categorias</div>
             <div class="stat-card-icon">
                 <i class="fas fa-list"></i>
             </div>
         </div>
-        <div class="stat-card-value">{{ total_categories|default:0 }}</div>
-        <div class="stat-card-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>5% este mês</span>
-        </div>
+        <div class="stat-card-value" data-value="categories"></div>
     </div>
 
     <!-- Card: Depoimentos -->
-    <div class="stat-card">
+    <div class="stat-card" data-stat="testimonials">
         <div class="stat-card-header">
             <div class="stat-card-title">Depoimentos</div>
             <div class="stat-card-icon">
                 <i class="fas fa-quote-right"></i>
             </div>
         </div>
-        <div class="stat-card-value">{{ total_testimonials|default:0 }}</div>
-        <div class="stat-card-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>8% este mês</span>
-        </div>
+        <div class="stat-card-value" data-value="testimonials"></div>
     </div>
 
     <!-- Card: Solicitações -->
-    <div class="stat-card">
+    <div class="stat-card" data-stat="contacts">
         <div class="stat-card-header">
             <div class="stat-card-title">Solicitações</div>
             <div class="stat-card-icon">
                 <i class="fas fa-envelope"></i>
             </div>
         </div>
-        <div class="stat-card-value">{{ total_contacts|default:0 }}</div>
-        <div class="stat-card-change negative">
-            <i class="fas fa-arrow-down"></i>
-            <span>3% este mês</span>
-        </div>
+        <div class="stat-card-value" data-value="contacts"></div>
     </div>
 </div>
 
