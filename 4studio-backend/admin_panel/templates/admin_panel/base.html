@@ -524,9 +524,9 @@
             background: rgba(20, 20, 30, 0.6);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(168, 85, 247, 0.1);
-            border-radius: 20px;
-            padding: 32px;
-            margin-bottom: 40px;
+            border-radius: 24px;
+            padding: 40px 44px;
+            margin-bottom: 56px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         
@@ -548,11 +548,12 @@
             border-radius: 10px;
         }
         
-        .filters-grid {
+        .filters-grid, .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px 32px;
+            margin-bottom: 32px;
+            align-items: start;
         }
         
         .filter-group {
@@ -562,11 +563,12 @@
         }
         
         .filter-group label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            color: #a78bfa;
+            color: #c4b5fd;
             text-transform: uppercase;
             letter-spacing: 1px;
+            padding-left: 4px;
         }
         
         /* Padronização Global de Inputs, Selects e Textareas */
@@ -586,10 +588,10 @@
         .filter-group input,
         .filter-group select {
             width: 100%;
-            padding: 14px 18px;
-            border: 2px solid rgba(168, 85, 247, 0.2);
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 16px 20px;
+            border: 2px solid rgba(168, 85, 247, 0.22);
+            border-radius: 14px;
+            background: rgba(12, 12, 18, 0.65);
             color: white;
             font-size: 15px;
             font-weight: 500;
@@ -601,10 +603,19 @@
         
         .filter-group select,
         select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a855f7' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%23c084fc' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 18px center;
-            padding-right: 45px;
+            background-position: right 20px center;
+            padding-right: 52px;
+        }
+
+        select option {
+            background: #12121b;
+            color: #f5f3ff;
+        }
+
+        select option:disabled {
+            color: #6b6b75;
         }
         
         input[type="text"]:focus,
@@ -623,13 +634,13 @@
         .filter-group input:focus,
         .filter-group select:focus {
             outline: none;
-            border-color: #a855f7;
-            background: rgba(168, 85, 247, 0.08);
-            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+            border-color: #b176ff;
+            background: rgba(168, 85, 247, 0.12);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15), 0 8px 24px rgba(168, 85, 247, 0.15);
         }
         
         textarea {
-            min-height: 120px;
+            min-height: 140px;
             resize: vertical;
         }
         
