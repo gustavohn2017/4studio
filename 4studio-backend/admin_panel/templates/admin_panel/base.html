@@ -51,10 +51,9 @@
             overflow-x: hidden;
         }
         
-        /* Layout Principal */
+        /* Layout Principal - Flexbox Simples e Confiável */
         .admin-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            display: flex;
             min-height: 100vh;
             background: linear-gradient(135deg, #0a0a0f 0%, #1a1625 50%, #0a0a0f 100%);
             position: relative;
@@ -71,22 +70,37 @@
                 radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
             pointer-events: none;
+            z-index: 0;
         }
         
-        /* Sidebar */
+        /* Sidebar - Fixa à Esquerda */
         .admin-sidebar {
-            grid-column: 1 / 2;
-            width: 100%;
-            background: rgba(20, 20, 30, 0.85);
+            width: 280px;
+            background: rgba(20, 20, 30, 0.95);
             backdrop-filter: blur(20px);
             border-right: 1px solid rgba(168, 85, 247, 0.15);
-            position: sticky;
+            position: fixed;
             top: 0;
-            min-height: 100vh;
-            z-index: 50;
+            left: 0;
+            height: 100vh;
+            z-index: 100;
             display: flex;
             flex-direction: column;
             box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+        
+        .admin-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .admin-sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(168, 85, 247, 0.3);
+            border-radius: 10px;
         }
         
         /* Sidebar Header */
@@ -277,27 +291,30 @@
             color: #6b7280;
         }
         
-        /* Main Content */
+        /* Main Content - Ocupa Espaço Restante */
         .admin-main {
-            grid-column: 2 / 3;
+            flex: 1;
+            margin-left: 280px;
             min-height: 100vh;
             position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
         }
         
-        /* Header */
+        /* Header - Sticky no Topo */
         .admin-header {
-            background: rgba(12, 12, 18, 0.85);
+            background: rgba(15, 15, 22, 0.95);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(168, 85, 247, 0.12);
-            padding: 20px 44px 18px;
+            padding: 24px 48px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 60;
+            z-index: 90;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
         
         .header-left {
@@ -399,10 +416,12 @@
             color: #a855f7;
         }
         
-        /* Content Area */
+        /* Content Area - Espaçamento Adequado */
         .admin-content {
-            padding: 48px 56px;
+            flex: 1;
+            padding: 48px 56px 80px;
             max-width: 1800px;
+            width: 100%;
             margin: 0 auto;
         }
         
@@ -656,23 +675,23 @@
             padding-top: 8px;
         }
         
-        /* Stats Grid */
+        /* Stats Grid - Layout Robusto */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
         }
         
         .stat-card {
-            background: rgba(20, 20, 30, 0.6);
+            background: rgba(20, 20, 30, 0.7);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(168, 85, 247, 0.15);
             border-radius: 20px;
-            padding: 32px;
+            padding: 28px 32px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
         
         .stat-card::before {
@@ -688,16 +707,37 @@
         .stat-card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
+            align-items: center;
+            margin-bottom: 20px;
         }
         
-        .stat-card h3 {
+        .stat-card-title {
             font-size: 13px;
             color: #9ca3af;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
+        }
+        
+        .stat-card-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(168, 85, 247, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a855f7;
+            font-size: 20px;
+        }
+        
+        .stat-card-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+            margin: 0;
+            letter-spacing: -1px;
         }
         
         .stat-icon {
@@ -890,7 +930,7 @@
             letter-spacing: 0.5px;
         }
         
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .admin-sidebar {
                 width: 240px;
@@ -901,22 +941,32 @@
             }
             
             .admin-content {
-                padding: 32px 40px;
-            }
-            
-            .admin-footer {
-                margin: 48px 40px 32px 40px;
+                padding: 32px 40px 60px;
             }
         }
         
         @media (max-width: 768px) {
             .admin-sidebar {
-                transform: translateX(-100%);
+                transform: translateX(-280px);
+                transition: transform 0.3s ease;
             }
             
             .admin-sidebar.mobile-open {
                 transform: translateX(0);
             }
+            
+            .admin-main {
+                margin-left: 0;
+            }
+            
+            .admin-content {
+                padding: 24px 20px 40px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
             
             .admin-main {
                 margin-left: 0;
